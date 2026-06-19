@@ -33,3 +33,26 @@
     @apply block text-sm font-medium text-gray-700 mb-1;
   }
 }
+
+@media print {
+  body * {
+    visibility: hidden;
+  }
+
+  #receipt-print,
+  #receipt-print * {
+    visibility: visible;
+  }
+
+  #receipt-print {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    border: 0 !important;
+    box-shadow: none !important;
+  }
+
+  button {
+    display: none !important;
+  }
+}

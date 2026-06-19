@@ -6,6 +6,8 @@ import Badge from '../components/Badge';
 import Pagination from '../components/Pagination';
 import Spinner from '../components/Spinner';
 import toast from 'react-hot-toast';
+import Swal from 'sweetalert2';
+import { Edit, Trash2, Download, Upload, FileText } from 'lucide-react';
 
 const emptyForm = { name: '', email: '', password: '', employeeId: '', phone: '', qualification: '', joiningDate: '', subjects: [] };
 
@@ -17,8 +19,11 @@ const Teachers = () => {
   const [page, setPage] = useState(1);
   const [pages, setPages] = useState(1);
   const [showModal, setShowModal] = useState(false);
+  const [showImportModal, setShowImportModal] = useState(false);
   const [editing, setEditing] = useState(null);
   const [form, setForm] = useState(emptyForm);
+  const [csvFile, setCsvFile] = useState(null);
+  const [importing, setImporting] = useState(false);
 
   const fetchTeachers = async () => {
     setLoading(true);
@@ -69,10 +74,22 @@ const Teachers = () => {
   };
 
   const handleDelete = async (id) => {
-    if (!window.confirm('Delete this teacher?')) return;
+    const result = await Swal.fire({
+      title: 'Delete Teacher',
+      text: 'Are you sure? This action cannot be undone.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#ef4444',
+      cancelButtonColor: '#6b7280',
+      confirmButtonText: 'Yes, Delete',
+      cancelButtonText: 'Cancel',
+    });
+
+    if (!result.isConfirmed) return;
+
     try {
       await teacherAPI.delete(id);
-      toast.success('Teacher deleted');
+      toast.success('Teacher deleted successfully');
       fetchTeachers();
     } catch (error) {
       toast.error(error.response?.data?.message || 'Delete failed');
@@ -86,11 +103,59 @@ const Teachers = () => {
     }));
   };
 
+  const handleExportCSV = async () => {
+    try {
+      toast.loading('Exporting to CSV...');
+      const response = await teacherAPI.exportCSV({});
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `teachers-${new Date().toISOString().split('T')[0]}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+      toast.dismiss();
+      toast.success('Teachers exported to CSV successfully!');
+    } catch (error) {
+      toast.dismiss();
+      toast.error(error.response?.data?.message || 'Export to CSV failed');
+    }
+  };
+
+  const handleExportPDF = async () => {
+    try {
+      toast.loading('Exporting to PDF...');
+      const response = await teacherAPI.exportPDF({});
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `teachers-${new Date().toISOString().split('T')[0]}.pdf`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+      toast.dismiss();
+      toast.success('Teachers exported to PDF successfully!');
+    } catch (error) {
+      toast.dismiss();
+      toast.error(error.response?.data?.message || 'Export to PDF failed');
+    }
+  };
+
   return (
     <DashboardLayout>
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
         <div><h1 className="text-2xl font-bold">Teachers</h1><p className="text-gray-500 text-sm">Manage teacher records</p></div>
-        <button onClick={openCreate} className="btn-primary">+ Add Teacher</button>
+        <div className="flex gap-2 flex-wrap">
+          <button onClick={handleExportCSV} className="btn-secondary flex items-center gap-2">
+            <FileText size={18} /> Export CSV
+          </button>
+          <button onClick={handleExportPDF} className="btn-secondary flex items-center gap-2">
+            <Download size={18} /> Export PDF
+          </button>
+          <button onClick={openCreate} className="btn-primary">+ Add Teacher</button>
+        </div>
       </div>
 
       <div className="card mb-6">
@@ -99,11 +164,11 @@ const Teachers = () => {
 
       {loading ? <div className="flex justify-center py-12"><Spinner size="lg" /></div> : (
         <div className="card p-0 overflow-hidden">
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto max-h-[520px] overflow-y-auto">
             <table className="w-full">
-              <thead className="bg-gray-50 border-b">
+              <thead className="bg-gray-50 border-b sticky top-0 z-10">
                 <tr>{['Employee ID', 'Name', 'Email', 'Phone', 'Subjects', 'Actions'].map((h) => (
-                  <th key={h} className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase">{h}</th>
+                  <th key={h} className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase bg-gray-50">{h}</th>
                 ))}</tr>
               </thead>
               <tbody className="divide-y">
@@ -114,9 +179,23 @@ const Teachers = () => {
                     <td className="px-4 py-3 text-sm">{t.user?.email}</td>
                     <td className="px-4 py-3 text-sm">{t.phone}</td>
                     <td className="px-4 py-3 text-sm">{t.subjects?.length || 0} subjects</td>
-                    <td className="px-4 py-3 text-sm space-x-2">
-                      <button onClick={() => openEdit(t)} className="text-primary-600 hover:underline">Edit</button>
-                      <button onClick={() => handleDelete(t._id)} className="text-red-600 hover:underline">Delete</button>
+                    <td className="px-4 py-3 text-sm">
+                      <div className="flex gap-3">
+                        <button 
+                          onClick={() => openEdit(t)} 
+                          className="p-2 hover:bg-yellow-100 rounded text-yellow-600 transition"
+                          title="Edit teacher"
+                        >
+                          <Edit size={18} />
+                        </button>
+                        <button 
+                          onClick={() => handleDelete(t._id)} 
+                          className="p-2 hover:bg-red-100 rounded text-red-600 transition"
+                          title="Delete teacher"
+                        >
+                          <Trash2 size={18} />
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))}

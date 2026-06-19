@@ -9,9 +9,14 @@ export const authAPI = {
 export const studentAPI = {
   getAll: (params) => api.get('/students', { params }),
   getById: (id) => api.get(`/students/${id}`),
+  getProfileSummary: (id) => api.get(`/students/${id}/profile-summary`),
+  getNextRollNumber: (params) => api.get('/students/next-roll', { params }),
   create: (data) => api.post('/students', data),
   update: (id, data) => api.put(`/students/${id}`, data),
   delete: (id) => api.delete(`/students/${id}`),
+  bulkDelete: (ids) => api.post('/students/bulk-delete', { ids }),
+  exportCSV: (params) => api.get('/students/export/csv', { params, responseType: 'blob' }),
+  exportPDF: (params) => api.get('/students/export/pdf', { params, responseType: 'blob' }),
 };
 
 export const teacherAPI = {
@@ -20,6 +25,8 @@ export const teacherAPI = {
   create: (data) => api.post('/teachers', data),
   update: (id, data) => api.put(`/teachers/${id}`, data),
   delete: (id) => api.delete(`/teachers/${id}`),
+  exportCSV: (params) => api.get('/teachers/export/csv', { params, responseType: 'blob' }),
+  exportPDF: (params) => api.get('/teachers/export/pdf', { params, responseType: 'blob' }),
 };
 
 export const classAPI = {
@@ -36,6 +43,8 @@ export const subjectAPI = {
   create: (data) => api.post('/subjects', data),
   update: (id, data) => api.put(`/subjects/${id}`, data),
   delete: (id) => api.delete(`/subjects/${id}`),
+  exportCSV: (params) => api.get('/subjects/export/csv', { params, responseType: 'blob' }),
+  exportPDF: (params) => api.get('/subjects/export/pdf', { params, responseType: 'blob' }),
 };
 
 export const attendanceAPI = {
@@ -88,6 +97,8 @@ export const timetableAPI = {
   create: (data) => api.post('/timetable', data),
   bulkCreate: (data) => api.post('/timetable/bulk', data),
   delete: (id) => api.delete(`/timetable/${id}`),
+  exportCSV: (params) => api.get('/timetable/export/csv', { params, responseType: 'blob' }),
+  exportPDF: (params) => api.get('/timetable/export/pdf', { params, responseType: 'blob' }),
 };
 
 export const homeworkAPI = {

@@ -11,6 +11,8 @@ const studentValidation = [
   body('rollNumber').trim().notEmpty().withMessage('Roll number is required'),
   body('class').notEmpty().withMessage('Class is required'),
   body('dateOfBirth').isISO8601().withMessage('Valid date of birth is required'),
+  body('gender').optional({ checkFalsy: true }).isIn(['male', 'female', 'other']).withMessage('Invalid gender'),
+  body('bloodGroup').optional({ checkFalsy: true }).isIn(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-']).withMessage('Invalid blood group'),
   body('parentName').trim().notEmpty().withMessage('Parent name is required'),
   body('phone').trim().notEmpty().withMessage('Phone is required'),
 ];

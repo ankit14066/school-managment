@@ -1,5 +1,5 @@
 const {
-  getTeachers, getTeacher, createTeacher, updateTeacher, deleteTeacher,
+  getTeachers, getTeacher, createTeacher, updateTeacher, deleteTeacher, exportTeachersCSV, exportTeachersPDF,
 } = require('../controllers/teacherController');
 const { protect, authorize } = require('../middleware/auth');
 const validate = require('../middleware/validate');
@@ -17,5 +17,9 @@ router.route('/:id')
   .get(authorize('admin'), getTeacher)
   .put(authorize('admin'), validate, updateTeacher)
   .delete(authorize('admin'), deleteTeacher);
+
+// Export endpoints
+router.get('/export/csv', authorize('admin'), exportTeachersCSV);
+router.get('/export/pdf', authorize('admin'), exportTeachersPDF);
 
 module.exports = router;

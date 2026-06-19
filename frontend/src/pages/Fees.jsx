@@ -6,6 +6,7 @@ import Badge from '../components/Badge';
 import Pagination from '../components/Pagination';
 import Spinner from '../components/Spinner';
 import toast from 'react-hot-toast';
+import { Printer, ReceiptText } from 'lucide-react';
 
 const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
 
@@ -80,6 +81,9 @@ const Fees = () => {
   };
 
   const statusVariant = { paid: 'active', pending: 'inactive', partial: 'teacher' };
+  const formatCurrency = (amount) => `Rs. ${Number(amount || 0).toLocaleString('en-IN')}`;
+  const formatDate = (date) => date ? new Date(date).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) : '-';
+  const formatLabel = (value) => value ? value.replace(/_/g, ' ') : 'N/A';
 
   return (
     <DashboardLayout>
@@ -157,20 +161,99 @@ const Fees = () => {
         </form>
       </Modal>
 
-      <Modal isOpen={!!receipt} onClose={() => setReceipt(null)} title="Fee Receipt">
+      <Modal isOpen={!!receipt} onClose={() => setReceipt(null)} title="Fee Receipt" size="lg">
         {receipt && (
-          <div id="receipt-print" className="space-y-2 text-sm">
-            <p className="text-center text-lg font-bold mb-4">FEE RECEIPT</p>
-            <p><strong>Receipt No:</strong> {receipt.receiptNumber}</p>
-            <p><strong>Student:</strong> {receipt.studentName}</p>
-            <p><strong>Class:</strong> {receipt.class}</p>
-            <p><strong>Type:</strong> {receipt.type}</p>
-            <p><strong>Month:</strong> {receipt.month} ({receipt.academicYear})</p>
-            <p><strong>Amount:</strong> ₹{receipt.amount}</p>
-            <p><strong>Paid:</strong> ₹{receipt.paidAmount}</p>
-            <p><strong>Method:</strong> {receipt.paymentMethod}</p>
-            <p><strong>Date:</strong> {receipt.paymentDate ? new Date(receipt.paymentDate).toLocaleDateString() : '—'}</p>
-            <button onClick={() => window.print()} className="btn-primary w-full mt-4">Print Receipt</button>
+          <div>
+            <div id="receipt-print" className="overflow-hidden rounded-lg border border-gray-200 bg-white text-gray-900">
+              <div className="bg-gray-950 px-6 py-6 text-white">
+                <div className="flex items-start justify-between gap-4">
+                  <div>
+                    <p className="text-xs font-semibold uppercase tracking-widest text-gray-300">SchoolMS Phase 2</p>
+                    <h2 className="mt-2 text-2xl font-bold">Fee Receipt</h2>
+                    <p className="mt-1 text-sm text-gray-300">Official payment acknowledgement</p>
+                  </div>
+                  <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-white/10">
+                    <ReceiptText size={26} />
+                  </div>
+                </div>
+
+                <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-3">
+                  <div>
+                    <p className="text-xs uppercase text-gray-400">Receipt No.</p>
+                    <p className="mt-1 font-semibold">{receipt.receiptNumber || 'N/A'}</p>
+                  </div>
+                  <div>
+                    <p className="text-xs uppercase text-gray-400">Payment Date</p>
+                    <p className="mt-1 font-semibold">{formatDate(receipt.paymentDate)}</p>
+                  </div>
+                  <div>
+                    <p className="text-xs uppercase text-gray-400">Status</p>
+                    <p className="mt-1 inline-flex rounded-full bg-emerald-400/15 px-3 py-1 text-xs font-semibold uppercase text-emerald-200">{receipt.status}</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 gap-5 p-6 lg:grid-cols-[1fr_240px]">
+                <div className="space-y-5">
+                  <div>
+                    <p className="text-xs font-semibold uppercase text-gray-500">Received From</p>
+                    <h3 className="mt-1 text-xl font-bold">{receipt.studentName}</h3>
+                    <p className="mt-1 text-sm text-gray-500">{receipt.class} {receipt.rollNumber ? `- Roll No. ${receipt.rollNumber}` : ''}</p>
+                  </div>
+
+                  <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                    {[
+                      ['Fee Type', formatLabel(receipt.type)],
+                      ['Month', `${receipt.month} (${receipt.academicYear})`],
+                      ['Payment Method', formatLabel(receipt.paymentMethod)],
+                      ['Academic Year', receipt.academicYear],
+                    ].map(([label, value]) => (
+                      <div key={label} className="rounded-lg border border-gray-200 bg-gray-50 p-4">
+                        <p className="text-xs font-semibold uppercase text-gray-500">{label}</p>
+                        <p className="mt-1 text-sm font-semibold capitalize text-gray-900">{value}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="rounded-lg border border-gray-200 bg-gray-50 p-5">
+                  <p className="text-xs font-semibold uppercase text-gray-500">Payment Summary</p>
+                  <div className="mt-4 space-y-3 text-sm">
+                    <div className="flex justify-between gap-4">
+                      <span className="text-gray-500">Total Amount</span>
+                      <span className="font-semibold">{formatCurrency(receipt.amount)}</span>
+                    </div>
+                    <div className="flex justify-between gap-4">
+                      <span className="text-gray-500">Paid Amount</span>
+                      <span className="font-semibold text-emerald-700">{formatCurrency(receipt.paidAmount)}</span>
+                    </div>
+                    <div className="border-t border-gray-200 pt-3">
+                      <div className="flex justify-between gap-4">
+                        <span className="font-semibold text-gray-700">Balance Due</span>
+                        <span className="text-lg font-bold text-gray-950">{formatCurrency(receipt.dueAmount)}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="border-t border-dashed border-gray-300 px-6 py-4">
+                <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+                  <div>
+                    <p className="text-xs font-semibold uppercase text-gray-500">Note</p>
+                    <p className="mt-1 text-sm text-gray-600">This is a computer generated receipt.</p>
+                  </div>
+                  <div className="text-left sm:text-right">
+                    <div className="mb-2 h-px w-40 bg-gray-300 sm:ml-auto" />
+                    <p className="text-xs font-semibold uppercase text-gray-500">Authorized Signature</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <button onClick={() => window.print()} className="btn-primary mt-4 flex w-full items-center justify-center gap-2">
+              <Printer size={18} /> Print Receipt
+            </button>
           </div>
         )}
       </Modal>

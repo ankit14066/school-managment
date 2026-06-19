@@ -1,5 +1,5 @@
 const {
-  getSubjects, getSubject, createSubject, updateSubject, deleteSubject,
+  getSubjects, getSubject, createSubject, updateSubject, deleteSubject, exportSubjectsCSV, exportSubjectsPDF,
 } = require('../controllers/subjectController');
 const { protect, authorize } = require('../middleware/auth');
 const validate = require('../middleware/validate');
@@ -17,5 +17,9 @@ router.route('/:id')
   .get(getSubject)
   .put(authorize('admin'), validate, updateSubject)
   .delete(authorize('admin'), deleteSubject);
+
+// Export endpoints
+router.get('/export/csv', authorize('admin'), exportSubjectsCSV);
+router.get('/export/pdf', authorize('admin'), exportSubjectsPDF);
 
 module.exports = router;

@@ -3,6 +3,9 @@ const Teacher = require('../models/Teacher');
 const Subject = require('../models/Subject');
 const { getPagination, paginatedResponse } = require('../utils/pagination');
 const logActivity = require('../utils/activityLogger');
+const PDFDocument = require('pdfkit');
+const { createObjectCsvWriter } = require('csv-writer');
+const fs = require('fs');
 
 // @desc    Get all teachers
 // @route   GET /api/teachers
@@ -173,4 +176,148 @@ const deleteTeacher = async (req, res, next) => {
   }
 };
 
-module.exports = { getTeachers, getTeacher, createTeacher, updateTeacher, deleteTeacher };
+// @desc    Export teachers to CSV
+// @route   GET /api/teachers/export/csv
+const exportTeachersCSV = async (req, res, next) => {
+  try {
+    const teachers = await Teacher.find({})
+      .populate('user', 'name email')
+      .populate('subjects', 'name code')
+      .sort({ employeeId: 1 });
+
+    if (teachers.length === 0) {
+      return res.status(400).json({ success: false, message: 'No teachers found to export' });
+    }
+
+    const csvData = teachers.map((teacher) => ({
+      'Employee ID': teacher.employeeId,
+      'Name': teacher.user?.name || 'N/A',
+      'Email': teacher.user?.email || 'N/A',
+      'Phone': teacher.phone || 'N/A',
+      'Qualification': teacher.qualification || 'N/A',
+      'Joining Date': teacher.joiningDate ? new Date(teacher.joiningDate).toLocaleDateString() : 'N/A',
+      'Subjects': teacher.subjects?.map((s) => s.name).join(', ') || 'None',
+    }));
+
+    const csvPath = `/uploads/temp/teachers-${Date.now()}.csv`;
+    const csvFilePath = `${process.cwd()}${csvPath}`;
+
+    const writer = createObjectCsvWriter({
+      path: csvFilePath,
+      header: [
+        { id: 'Employee ID', title: 'Employee ID' },
+        { id: 'Name', title: 'Name' },
+        { id: 'Email', title: 'Email' },
+        { id: 'Phone', title: 'Phone' },
+        { id: 'Qualification', title: 'Qualification' },
+        { id: 'Joining Date', title: 'Joining Date' },
+        { id: 'Subjects', title: 'Subjects' },
+      ],
+    });
+
+    await writer.writeRecords(csvData);
+
+    await logActivity('export', 'Teacher', null, req.user._id, `${teachers.length} teachers exported to CSV`);
+
+    res.download(csvFilePath, `teachers-${Date.now()}.csv`, (err) => {
+      if (err) console.error('Download error:', err);
+      fs.unlink(csvFilePath, (error) => {
+        if (error) console.error('File cleanup error:', error);
+      });
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// @desc    Export teachers to PDF
+// @route   GET /api/teachers/export/pdf
+const exportTeachersPDF = async (req, res, next) => {
+  try {
+    const teachers = await Teacher.find({})
+      .populate('user', 'name email')
+      .populate('subjects', 'name code')
+      .sort({ employeeId: 1 });
+
+    if (teachers.length === 0) {
+      return res.status(400).json({ success: false, message: 'No teachers found to export' });
+    }
+
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', `attachment; filename="teachers-${Date.now()}.pdf"`);
+
+    const doc = new PDFDocument({ margin: 30, size: 'A4' });
+    doc.pipe(res);
+
+    doc.fontSize(20).font('Helvetica-Bold').text('SCHOOL MANAGEMENT SYSTEM', { align: 'center' });
+    doc.fontSize(14).text('Teachers Report', { align: 'center' });
+    doc.fontSize(10).text(`Generated on: ${new Date().toLocaleDateString()}`, { align: 'center' });
+    doc.moveDown();
+
+    const tableTop = doc.y;
+    const cols = {
+      employeeId: 50,
+      name: 110,
+      email: 140,
+      phone: 100,
+      qualification: 120,
+    };
+
+    doc.font('Helvetica-Bold').fontSize(9);
+    doc.text('Emp ID', cols.employeeId, tableTop);
+    doc.text('Name', cols.name, tableTop);
+    doc.text('Email', cols.email, tableTop);
+    doc.text('Phone', cols.phone, tableTop);
+    doc.text('Qualification', cols.qualification, tableTop);
+
+    doc.moveTo(30, tableTop + 15).lineTo(550, tableTop + 15).stroke();
+
+    let y = tableTop + 20;
+    const pageHeight = doc.page.height;
+    const bottomMargin = 60;
+
+    doc.font('Helvetica').fontSize(8);
+
+    teachers.forEach((teacher) => {
+      if (y > pageHeight - bottomMargin) {
+        doc.addPage();
+        y = 30;
+        doc.font('Helvetica-Bold').fontSize(9);
+        doc.text('Emp ID', cols.employeeId, y);
+        doc.text('Name', cols.name, y);
+        doc.text('Email', cols.email, y);
+        doc.text('Phone', cols.phone, y);
+        doc.text('Qualification', cols.qualification, y);
+        doc.moveTo(30, y + 15).lineTo(550, y + 15).stroke();
+        y += 20;
+        doc.font('Helvetica').fontSize(8);
+      }
+
+      doc.text(teacher.employeeId || 'N/A', cols.employeeId, y);
+      doc.text(teacher.user?.name || 'N/A', cols.name, y, { width: 80, ellipsis: true });
+      doc.text(teacher.user?.email || 'N/A', cols.email, y, { width: 100, ellipsis: true });
+      doc.text(teacher.phone || 'N/A', cols.phone, y);
+      doc.text(teacher.qualification || 'N/A', cols.qualification, y);
+
+      y += 15;
+    });
+
+    doc.fontSize(8).text(`Total Teachers: ${teachers.length}`, 30, pageHeight - 30, { align: 'left' });
+
+    await logActivity('export', 'Teacher', null, req.user._id, `${teachers.length} teachers exported to PDF`);
+
+    doc.end();
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = { 
+  getTeachers, 
+  getTeacher, 
+  createTeacher, 
+  updateTeacher, 
+  deleteTeacher,
+  exportTeachersCSV,
+  exportTeachersPDF,
+};

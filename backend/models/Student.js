@@ -23,6 +23,16 @@ const studentSchema = new mongoose.Schema(
       type: Date,
       required: [true, 'Date of birth is required'],
     },
+    gender: {
+      type: String,
+      enum: ['male', 'female', 'other', ''],
+      default: '',
+    },
+    bloodGroup: {
+      type: String,
+      enum: ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-', ''],
+      default: '',
+    },
     parentName: {
       type: String,
       required: [true, 'Parent name is required'],
