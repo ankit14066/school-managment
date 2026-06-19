@@ -1,0 +1,6 @@
+name,email,rollNumber,classId,dateOfBirth,parentName,phone,address,parentEmail,parentPassword,password
+John Doe,john.doe@example.com,101,CLASS_ID_HERE,2008-05-15,Robert Doe,+1234567890,123 Main St,parent.john@example.com,parent123,student123
+Jane Smith,jane.smith@example.com,102,CLASS_ID_HERE,2008-07-20,Sarah Smith,+1234567891,456 Oak Ave,parent.jane@example.com,parent123,student123
+Mike Johnson,mike.johnson@example.com,103,CLASS_ID_HERE,2008-03-10,David Johnson,+1234567892,789 Pine Rd,parent.mike@example.com,parent123,student123
+Emily Brown,emily.brown@example.com,104,CLASS_ID_HERE,2008-11-25,Patricia Brown,+1234567893,321 Elm St,parent.emily@example.com,parent123,student123
+Alex Williams,alex.williams@example.com,105,CLASS_ID_HERE,2008-09-08,Michael Williams,+1234567894,654 Maple Dr,parent.alex@example.com,parent123,student123
