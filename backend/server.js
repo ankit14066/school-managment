@@ -22,8 +22,9 @@ const homeworkRoutes = require('./routes/homeworkRoutes');
 const eventRoutes = require('./routes/eventRoutes');
 const messageRoutes = require('./routes/messageRoutes');
 const reportRoutes = require('./routes/reportRoutes');
+const ticketRoutes = require('./routes/ticketRoutes');
 
-['students', 'homework', 'notices'].forEach((dir) => {
+['students', 'homework', 'notices', 'tickets'].forEach((dir) => {
   const uploadDir = path.join(__dirname, `uploads/${dir}`);
   if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, { recursive: true });
 });
@@ -57,6 +58,7 @@ app.use('/api/homework', homeworkRoutes);
 app.use('/api/events', eventRoutes);
 app.use('/api/messages', messageRoutes);
 app.use('/api/reports', reportRoutes);
+app.use('/api/tickets', ticketRoutes);
 
 app.use(errorHandler);
 

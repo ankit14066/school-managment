@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import Sidebar from './Sidebar';
 import BottomNav from './BottomNav';
+import Footer from './Footer';
 
 const DashboardLayout = ({ children }) => {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -18,8 +19,11 @@ const DashboardLayout = ({ children }) => {
           </button>
           <h1 className="font-bold text-primary-700">SchoolMS</h1>
         </header>
-        <main className="flex-1 p-4 lg:p-8 overflow-auto pb-20 lg:pb-8">
-          {children}
+        <main className="flex-1 p-4 lg:p-8 overflow-auto pb-20 lg:pb-8 flex flex-col justify-between">
+          <div className="flex-1">
+            {children}
+          </div>
+          <Footer />
         </main>
         <BottomNav />
       </div>

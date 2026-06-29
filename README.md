@@ -58,6 +58,12 @@ Full-stack MERN School Management System with role-based access control.
 - Monthly fee collection
 - Recent activity log
 
+### Issue Ticket Module
+- Anyone can submit a support ticket (Title, Module, Description, optional Screenshot, reference URL, Priority)
+- Special Developer role has access to all pages (Admin + Teacher + portals)
+- Developer dashboard with ticket search, status/priority/module filtering, and color-coded table
+- Ticket details page with image preview, reference link, status update controls, and private internal notes
+
 ## Project Structure
 
 ```
@@ -111,6 +117,8 @@ MONGODB_URI=your_mongodb_connection_string
 JWT_SECRET=your_secret_key
 JWT_EXPIRE=7d
 NODE_ENV=development
+DEVELOPER_EMAIL=developer@school.com
+DEVELOPER_PASSWORD=developer123
 ```
 
 **frontend/.env**
@@ -125,6 +133,7 @@ VITE_API_URL=http://localhost:5000/api
 | Admin | admin@school.com | admin123 |
 | Teacher | rajesh@school.com | teacher123 |
 | Student | amit@school.com | student123 |
+| Developer | developer@school.com | developer123 |
 
 ## API Endpoints
 
@@ -145,6 +154,10 @@ VITE_API_URL=http://localhost:5000/api
 | POST | `/api/results/exams` | Admin/Teacher | Create exam |
 | POST | `/api/results/bulk` | Admin/Teacher | Bulk marks entry |
 | GET | `/api/dashboard/stats` | Admin | Dashboard stats |
+| POST | `/api/tickets` | Private | Submit issue ticket (optional screenshot) |
+| GET | `/api/tickets` | Developer | List all tickets (search & filter) |
+| GET | `/api/tickets/:id` | Private | Get single ticket detail |
+| PUT | `/api/tickets/:id` | Developer | Update status & internal notes |
 
 ## Database Models
 
@@ -157,6 +170,7 @@ VITE_API_URL=http://localhost:5000/api
 - **Fee / FeeStructure** — payments, class fee structure, receipts
 - **Exam / Result** — exams, marks, auto grades
 - **ActivityLog** — dashboard recent activity
+- **Ticket** — ticketId (#TKT-xxx), title, moduleName, description, screenshot, referenceUrl, priority, status, submittedBy, internalNotes, closedAt
 
 ## License
 

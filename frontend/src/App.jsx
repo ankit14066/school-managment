@@ -19,6 +19,9 @@ import Homework from './pages/Homework';
 import Events from './pages/Events';
 import Messages from './pages/Messages';
 import ParentPortal from './pages/ParentPortal';
+import SubmitTicket from './pages/SubmitTicket';
+import TicketList from './pages/TicketList';
+import TicketDetail from './pages/TicketDetail';
 
 const App = () => {
   const { loading, isAuthenticated } = useAuth();
@@ -43,6 +46,10 @@ const App = () => {
         <Route path="/results" element={<Results />} />
         <Route path="/my-attendance" element={<MyAttendance />} />
         <Route path="/my-results" element={<Results />} />
+        
+        {/* Issue Ticket general routes */}
+        <Route path="/tickets/submit" element={<SubmitTicket />} />
+        <Route path="/tickets/:id" element={<TicketDetail />} />
       </Route>
 
       <Route element={<ProtectedRoute roles={['parent']} />}>
@@ -55,6 +62,10 @@ const App = () => {
         <Route path="/classes" element={<Classes />} />
         <Route path="/subjects" element={<Subjects />} />
         <Route path="/fees" element={<Fees />} />
+      </Route>
+
+      <Route element={<ProtectedRoute roles={['developer']} />}>
+        <Route path="/tickets" element={<TicketList />} />
       </Route>
 
       <Route path="/" element={<Navigate to="/dashboard" replace />} />

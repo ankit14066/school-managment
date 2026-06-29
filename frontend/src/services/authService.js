@@ -128,6 +128,13 @@ export const reportAPI = {
   downloadFeeReceipt: (feeId) => api.get(`/reports/fee-receipt/${feeId}`, { responseType: 'blob' }),
 };
 
+export const ticketAPI = {
+  create: (data) => api.post('/tickets', data, { headers: { 'Content-Type': 'multipart/form-data' } }),
+  getAll: (params) => api.get('/tickets', { params }),
+  getById: (id) => api.get(`/tickets/${id}`),
+  update: (id, data) => api.put(`/tickets/${id}`, data),
+};
+
 export const downloadBlob = (blob, filename) => {
   const url = window.URL.createObjectURL(blob);
   const a = document.createElement('a');

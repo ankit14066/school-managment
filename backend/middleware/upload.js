@@ -38,4 +38,5 @@ module.exports = {
   homeworkUpload: createUpload('homework', 'homework', true),
   noticeUpload: createUpload('notices', 'notice', true),
   csvUpload: createUpload('temp', 'csv', false, true),
+  ticketUpload: createUpload('tickets', 'ticket'),
 };

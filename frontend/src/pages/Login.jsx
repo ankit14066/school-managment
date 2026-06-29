@@ -92,6 +92,16 @@ const Login = () => {
           >
             {loading ? <Spinner size="sm" /> : 'Sign In'}
           </button>
+
+          <div className="text-center mt-3">
+            <button
+              type="button"
+              onClick={() => setFormData({ email: 'developer@school.com', password: 'developer123' })}
+              className="text-xs text-gray-400 hover:text-green-700 hover:underline transition"
+            >
+              Developer Login Quick Access
+            </button>
+          </div>
         </form>
       </div>
     </div>

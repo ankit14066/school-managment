@@ -17,54 +17,52 @@ const Sidebar = ({ mobileOpen, onClose }) => {
     { to: "/teachers", label: "Teachers", icon: "👨‍🏫" },
     { to: "/classes", label: "Classes", icon: "🏫" },
     { to: "/subjects", label: "Subjects", icon: "📚" },
-    // { to: '/timetable', label: 'Timetable', icon: '🗓️' },
-    // { to: '/notices', label: 'Notices', icon: '📢' },
-    // { to: '/homework', label: 'Homework', icon: '📝' },
-    // { to: '/events', label: 'Events', icon: '📅' },
     { to: "/attendance", label: "Attendance", icon: "📋" },
-    // { to: '/fees', label: 'Fees', icon: '💰' },
-    // { to: '/results', label: 'Results', icon: '📊' },
-    // { to: '/messages', label: 'Messages', icon: '✉️' },
     { to: "/profile", label: "Profile", icon: "👤" },
+    { to: "/tickets/submit", label: "Report Issue", icon: "🐛" },
   ];
 
   const teacherNav = [
     { to: "/dashboard", label: "Dashboard", icon: "📊" },
-    // { to: '/timetable', label: 'My Timetable', icon: '🗓️' },
-    // { to: '/notices', label: 'Notices', icon: '📢' },
-    // { to: '/homework', label: 'Homework', icon: '📝' },
     { to: "/attendance", label: "Attendance", icon: "📋" },
-    // { to: '/results', label: 'Marks', icon: '📊' },
-    // { to: '/messages', label: 'Messages', icon: '✉️' },
     { to: "/profile", label: "Profile", icon: "👤" },
+    { to: "/tickets/submit", label: "Report Issue", icon: "🐛" },
   ];
 
   const studentNav = [
     { to: "/dashboard", label: "Dashboard", icon: "📊" },
-    // { to: '/timetable', label: 'Timetable', icon: '🗓️' },
-    // { to: '/notices', label: 'Notices', icon: '📢' },
-    // { to: '/homework', label: 'Homework', icon: '📝' },
     { to: "/my-attendance", label: "Attendance", icon: "📋" },
-    // { to: '/my-results', label: 'Results', icon: '📊' },
     { to: "/profile", label: "Profile", icon: "👤" },
+    { to: "/tickets/submit", label: "Report Issue", icon: "🐛" },
   ];
 
   const parentNav = [
     { to: "/dashboard", label: "Dashboard", icon: "📊" },
     { to: "/parent-portal", label: "Child Portal", icon: "👨‍👧" },
-    // { to: '/notices', label: 'Notices', icon: '📢' },
-    // { to: '/homework', label: 'Homework', icon: '📝' },
-    // { to: '/messages', label: 'Messages', icon: '✉️' },
+    { to: "/profile", label: "Profile", icon: "👤" },
+    { to: "/tickets/submit", label: "Report Issue", icon: "🐛" },
+  ];
+
+  const developerNav = [
+    { to: "/dashboard", label: "Dashboard", icon: "📊" },
+    { to: "/tickets", label: "Issue Tickets", icon: "🎫" },
+    { to: "/students", label: "Students", icon: "🎓" },
+    { to: "/teachers", label: "Teachers", icon: "👨‍🏫" },
+    { to: "/classes", label: "Classes", icon: "🏫" },
+    { to: "/subjects", label: "Subjects", icon: "📚" },
+    { to: "/attendance", label: "Attendance", icon: "📋" },
     { to: "/profile", label: "Profile", icon: "👤" },
   ];
 
-  const navItems = isAdmin
-    ? adminNav
-    : isTeacher
-      ? teacherNav
-      : isParent
-        ? parentNav
-        : studentNav;
+  const navItems = user?.role === 'developer'
+    ? developerNav
+    : isAdmin
+      ? adminNav
+      : isTeacher
+        ? teacherNav
+        : isParent
+          ? parentNav
+          : studentNav;
 
   const content = (
     <>
