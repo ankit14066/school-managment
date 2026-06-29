@@ -6,6 +6,7 @@ import Pagination from '../components/Pagination';
 import Spinner from '../components/Spinner';
 import toast from 'react-hot-toast';
 import Swal from 'sweetalert2';
+import GreenSelect from "../components/GreenSelect";
 import { Edit, Trash2, Download, FileText } from 'lucide-react';
 
 const Subjects = () => {
@@ -139,7 +140,7 @@ const Subjects = () => {
               <tbody className="divide-y">
                 {subjects.map((s) => (
                   <tr key={s._id} className="hover:bg-gray-50">
-                    <td className="px-4 py-3 text-sm font-mono text-primary-600">{s.code}</td>
+                    <td className="px-4 py-3 text-sm font-mono text-green-600">{s.code}</td>
                     <td className="px-4 py-3 text-sm font-medium">{s.name}</td>
                     <td className="px-4 py-3 text-sm">{s.class ? `${s.class.name}-${s.class.section}` : '—'}</td>
                     <td className="px-4 py-3 text-sm">{s.teacher?.user?.name || '—'}</td>
@@ -175,8 +176,8 @@ const Subjects = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div><label className="label">Name *</label><input className="input-field" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} required /></div>
             <div><label className="label">Code *</label><input className="input-field" value={form.code} onChange={(e) => setForm({ ...form, code: e.target.value.toUpperCase() })} required /></div>
-            <div><label className="label">Class *</label><select className="input-field" value={form.class} onChange={(e) => setForm({ ...form, class: e.target.value })} required><option value="">Select</option>{classes.map((c) => <option key={c._id} value={c._id}>Class {c.name}-{c.section}</option>)}</select></div>
-            <div><label className="label">Teacher</label><select className="input-field" value={form.teacher} onChange={(e) => setForm({ ...form, teacher: e.target.value })}><option value="">Select</option>{teachers.map((t) => <option key={t._id} value={t._id}>{t.user?.name}</option>)}</select></div>
+            <div><label className="label">Class *</label><GreenSelect  value={form.class} onChange={(e) => setForm({ ...form, class: e.target.value })} required><option value="">Select</option>{classes.map((c) => <option key={c._id} value={c._id}>Class {c.name}-{c.section}</option>)}</GreenSelect></div>
+            <div><label className="label">Teacher</label><GreenSelect  value={form.teacher} onChange={(e) => setForm({ ...form, teacher: e.target.value })}><option value="">Select</option>{teachers.map((t) => <option key={t._id} value={t._id}>{t.user?.name}</option>)}</GreenSelect></div>
             <div className="sm:col-span-2"><label className="label">Description</label><textarea className="input-field" rows="3" value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} placeholder="Optional description" /></div>
           </div>
           <div className="flex justify-end gap-3 pt-2">

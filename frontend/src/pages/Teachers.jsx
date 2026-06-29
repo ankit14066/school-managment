@@ -222,7 +222,7 @@ const Teachers = () => {
             <div className="flex flex-wrap gap-2 mt-1">
               {subjects.map((s) => (
                 <button key={s._id} type="button" onClick={() => toggleSubject(s._id)}
-                  className={`px-3 py-1 rounded-full text-xs font-medium border ${form.subjects.includes(s._id) ? 'bg-primary-100 border-primary-300 text-primary-700' : 'bg-gray-50 border-gray-200 text-gray-600'}`}>
+                  className={`px-3 py-1 rounded-full text-xs font-medium border ${form.subjects.includes(s._id) ? 'bg-green-100 border-green-300 text-green-700' : 'bg-gray-50 border-gray-200 text-gray-600'}`}>
                   {s.name} ({s.code})
                 </button>
               ))}

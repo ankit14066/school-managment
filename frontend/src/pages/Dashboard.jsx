@@ -60,8 +60,8 @@ const Dashboard = () => {
           <StatCard title="Students" value={stats.totalStudents} color="green" icon={<span className="text-2xl">🎓</span>} />
           <StatCard title="Teachers" value={stats.totalTeachers} color="blue" icon={<span className="text-2xl">👨‍🏫</span>} />
           <StatCard title="Classes" value={stats.totalClasses} color="purple" icon={<span className="text-2xl">🏫</span>} />
-          <StatCard title="Present Today" value={stats.todayAttendance?.present || 0} color="green" icon={<span className="text-2xl">✅</span>} />
-          <StatCard title="Fee Collected" value={`₹${stats.feeCollection?.collected || 0}`} color="primary" icon={<span className="text-2xl">💰</span>} />
+          {/* <StatCard title="Present Today" value={stats.todayAttendance?.present || 0} color="green" icon={<span className="text-2xl">✅</span>} />
+          <StatCard title="Fee Collected" value={`₹${stats.feeCollection?.collected || 0}`} color="primary" icon={<span className="text-2xl">💰</span>} /> */}
         </div>
       )}
 
@@ -81,7 +81,7 @@ const Dashboard = () => {
         </div>
       )}
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      {/* <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div className="card">
           <div className="flex justify-between items-center mb-4">
             <h2 className="font-semibold">📢 Notices</h2>
@@ -122,7 +122,7 @@ const Dashboard = () => {
             ))}
           </div>
         )}
-      </div>
+      </div> */}
     </DashboardLayout>
   );
 };

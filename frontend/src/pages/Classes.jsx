@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { classAPI, teacherAPI } from '../services/authService';
 import DashboardLayout from '../components/layout/DashboardLayout';
 import Modal from '../components/Modal';
+import GreenSelect from "../components/GreenSelect";
 import Pagination from '../components/Pagination';
 import Spinner from '../components/Spinner';
 import toast from 'react-hot-toast';
@@ -83,15 +84,15 @@ const Classes = () => {
       <Modal isOpen={showModal} onClose={() => setShowModal(false)} title={editing ? 'Edit Class' : 'Add Class'}>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
-            <div><label className="label">Class</label><select className="input-field" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })}>{CLASS_NAMES.map((n) => <option key={n} value={n}>{n}</option>)}</select></div>
-            <div><label className="label">Section</label><select className="input-field" value={form.section} onChange={(e) => setForm({ ...form, section: e.target.value })}>{SECTIONS.map((s) => <option key={s} value={s}>{s}</option>)}</select></div>
+            <div><label className="label">Class</label><GreenSelect  value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })}>{CLASS_NAMES.map((n) => <option key={n} value={n}>{n}</option>)}</GreenSelect></div>
+            <div><label className="label">Section</label><GreenSelect  value={form.section} onChange={(e) => setForm({ ...form, section: e.target.value })}>{SECTIONS.map((s) => <option key={s} value={s}>{s}</option>)}</GreenSelect></div>
             <div><label className="label">Academic Year</label><input className="input-field" value={form.academicYear} onChange={(e) => setForm({ ...form, academicYear: e.target.value })} required /></div>
             <div><label className="label">Capacity</label><input type="number" className="input-field" value={form.capacity} onChange={(e) => setForm({ ...form, capacity: parseInt(e.target.value) })} min={1} /></div>
             <div className="col-span-2"><label className="label">Class Teacher</label>
-              <select className="input-field" value={form.classTeacher} onChange={(e) => setForm({ ...form, classTeacher: e.target.value })}>
+              <GreenSelect  value={form.classTeacher} onChange={(e) => setForm({ ...form, classTeacher: e.target.value })}>
                 <option value="">Select Teacher</option>
                 {teachers.map((t) => <option key={t._id} value={t._id}>{t.user?.name} ({t.employeeId})</option>)}
-              </select>
+              </GreenSelect>
             </div>
           </div>
           <div className="flex justify-end gap-3"><button type="button" onClick={() => setShowModal(false)} className="btn-secondary">Cancel</button><button type="submit" className="btn-primary">{editing ? 'Update' : 'Create'}</button></div>

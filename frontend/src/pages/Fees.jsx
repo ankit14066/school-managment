@@ -168,7 +168,7 @@ const Fees = () => {
               <div className="bg-gray-950 px-6 py-6 text-white">
                 <div className="flex items-start justify-between gap-4">
                   <div>
-                    <p className="text-xs font-semibold uppercase tracking-widest text-gray-300">SchoolMS Phase 2</p>
+                    <p className="text-xs font-semibold uppercase tracking-widest text-gray-300">SchoolMS</p>
                     <h2 className="mt-2 text-2xl font-bold">Fee Receipt</h2>
                     <p className="mt-1 text-sm text-gray-300">Official payment acknowledgement</p>
                   </div>

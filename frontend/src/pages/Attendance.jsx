@@ -5,6 +5,7 @@ import DashboardLayout from '../components/layout/DashboardLayout';
 import Badge from '../components/Badge';
 import Spinner from '../components/Spinner';
 import toast from 'react-hot-toast';
+import GreenSelect from "../components/GreenSelect";
 
 const STATUS_OPTIONS = ['present', 'absent', 'late'];
 
@@ -83,24 +84,24 @@ const Attendance = () => {
         <h1 className="text-2xl font-bold">Attendance</h1>
         <div className="flex gap-2 mt-4">
           {['mark', 'history', 'report'].map((m) => (
-            <button key={m} onClick={() => setViewMode(m)} className={`px-4 py-2 rounded-lg text-sm font-medium capitalize ${viewMode === m ? 'bg-primary-600 text-white' : 'bg-gray-100 text-gray-600'}`}>{m === 'mark' ? 'Mark Attendance' : m === 'history' ? 'View History' : 'Monthly Report'}</button>
+            <button key={m} onClick={() => setViewMode(m)} className={`px-4 py-2 rounded-lg text-sm font-medium capitalize ${viewMode === m ? 'bg-green-600 text-white' : 'bg-gray-100 text-gray-600'}`}>{m === 'mark' ? 'Mark Attendance' : m === 'history' ? 'View History' : 'Monthly Report'}</button>
           ))}
         </div>
       </div>
 
       <div className="card mb-6 flex flex-col sm:flex-row gap-4">
-        <select value={selectedClass} onChange={(e) => setSelectedClass(e.target.value)} className="input-field sm:w-48">
+        <GreenSelect value={selectedClass} onChange={(e) => setSelectedClass(e.target.value)} className="sm:w-48">
           <option value="">Select Class</option>
           {classes.map((c) => <option key={c._id} value={c._id}>Class {c.name}-{c.section}</option>)}
-        </select>
+        </GreenSelect>
         <input type="date" value={date} onChange={(e) => setDate(e.target.value)} className="input-field sm:w-48" />
         {viewMode === 'history' && <button onClick={loadHistory} className="btn-primary">Load History</button>}
         {viewMode === 'report' && (
           <>
-            <select value={reportStudent} onChange={(e) => setReportStudent(e.target.value)} className="input-field flex-1">
+            <GreenSelect value={reportStudent} onChange={(e) => setReportStudent(e.target.value)} className=" flex-1">
               <option value="">Select Student</option>
               {students.map((s) => <option key={s._id} value={s._id}>{s.user?.name} ({s.rollNumber})</option>)}
-            </select>
+            </GreenSelect>
             <button onClick={loadReport} className="btn-primary">Get Report</button>
           </>
         )}
