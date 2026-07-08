@@ -38,25 +38,25 @@ childArray.forEach((child) => {
       <button
         type="button"
         onClick={() => setOpen((prev) => !prev)}
-        className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white 
-                   text-left flex items-center justify-between gap-2
-                   focus:outline-none focus:ring-2 focus:ring-green-500 
-                   focus:border-transparent transition-shadow"
+        className="w-full px-4 py-2.5 border border-slate-200 rounded-xl bg-slate-50/30 
+                   text-left flex items-center justify-between gap-2 text-sm font-semibold text-slate-700
+                   focus:outline-none focus:ring-4 focus:ring-primary-500/10 
+                   focus:border-primary-500 transition-all"
       >
-        <span className="text-sm text-gray-700">
+        <span className="text-slate-700">
           {selected?.label || 'Select'}
         </span>
         <ChevronDown
           size={16}
-          className={`text-gray-500 transition-transform duration-200 
+          className={`text-slate-400 transition-transform duration-200 
                       ${open ? 'rotate-180' : ''}`}
         />
       </button>
 
       {/* Dropdown List */}
       {open && (
-        <ul className="absolute z-50 mt-1 w-full bg-white border border-gray-200 
-                       rounded-lg shadow-lg overflow-hidden">
+        <ul className="absolute z-50 mt-1.5 w-full bg-white border border-slate-100 
+                       rounded-xl shadow-[0_12px_32px_rgba(15,23,42,0.08)] p-1.5 space-y-0.5 max-h-60 overflow-y-auto">
           {options.map((opt) => (
             <li
               key={opt.value}
@@ -64,10 +64,10 @@ childArray.forEach((child) => {
                 onChange({ target: { value: opt.value } });
                 setOpen(false);
               }}
-              className={`px-4 py-2 text-sm cursor-pointer transition-colors
+              className={`px-3 py-2 text-sm font-semibold rounded-lg cursor-pointer transition-colors
                 ${String(opt.value) === String(value)
-                  ? 'bg-green-700 text-white'        // selected = green
-                  : 'hover:bg-green-50 text-gray-700' // hover = light green
+                  ? 'bg-primary-600 text-white'
+                  : 'hover:bg-primary-50 text-slate-700'
                 }`}
             >
               {opt.label}
