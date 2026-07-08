@@ -6,6 +6,7 @@ import Modal from '../components/Modal';
 import Badge from '../components/Badge';
 import Spinner from '../components/Spinner';
 import toast from 'react-hot-toast';
+import { BookOpen } from 'lucide-react';
 
 const Homework = () => {
   const { isAdmin, isTeacher, isStudent, isParent } = useAuth();
@@ -50,30 +51,38 @@ const Homework = () => {
     } catch (error) { toast.error(error.response?.data?.message || 'Failed'); }
   };
 
-  const statusColor = { pending: 'inactive', submitted: 'active', overdue: 'teacher' };
-
   return (
     <DashboardLayout>
-      <div className="flex justify-between items-center mb-8">
-        <div><h1 className="text-2xl font-bold">Homework</h1></div>
-        {(isAdmin || isTeacher) && <button onClick={() => setShowModal(true)} className="btn-primary">+ Assign Homework</button>}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+        <div>
+          <h1 className="page-title">📝 Homework</h1>
+          <p className="page-subtitle">Assignments, due dates &amp; submissions</p>
+        </div>
+        {(isAdmin || isTeacher) && <button onClick={() => setShowModal(true)} className="btn-primary text-xs">+ Assign Homework</button>}
       </div>
 
       {loading ? <div className="flex justify-center py-12"><Spinner size="lg" /></div> : (
         <div className="space-y-4">
-          {homework.map((hw) => (
-            <div key={hw._id} className={`card ${hw.isOverdue ? 'border-l-4 border-l-red-400' : ''}`}>
+          {homework.length === 0 ? (
+            <div className="bg-white rounded-2xl border border-slate-100 p-12 text-center shadow-[0_8px_30px_rgb(0,0,0,0.008)]">
+              <BookOpen className="w-10 h-10 text-slate-300 mx-auto mb-3" />
+              <p className="text-xs font-bold text-slate-400">No homework assigned</p>
+            </div>
+          ) : homework.map((hw) => (
+            <div key={hw._id} className={`bg-white rounded-2xl border border-slate-100 p-6 shadow-[0_8px_30px_rgb(0,0,0,0.008)] hover:border-slate-200/50 ${hw.isOverdue ? 'border-l-4 border-l-rose-400' : ''}`}>
               <div className="flex justify-between items-start gap-4">
                 <div>
-                  <h3 className="font-semibold">{hw.title || hw.description?.slice(0, 50)}</h3>
-                  <p className="text-sm text-gray-500">{hw.subject?.name} · Class {hw.class?.name}-{hw.class?.section}</p>
-                  <p className="text-sm text-gray-600 mt-2">{hw.description}</p>
-                  <p className="text-xs text-gray-400 mt-2">Due: {new Date(hw.dueDate).toLocaleDateString()}</p>
+                  <h3 className="text-sm font-extrabold text-slate-800">{hw.title || hw.description?.slice(0, 50)}</h3>
+                  <p className="text-xs font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-lg inline-block mt-1">{hw.subject?.name} · Class {hw.class?.name}-{hw.class?.section}</p>
+                  <p className="text-xs font-semibold text-slate-600 mt-2 leading-relaxed">{hw.description}</p>
+                  <p className="text-xs font-bold text-rose-500 bg-rose-50 px-2 py-0.5 rounded-md inline-block mt-2">
+                    Due: {new Date(hw.dueDate).toLocaleDateString()}
+                  </p>
                 </div>
-                <div className="flex flex-col items-end gap-2">
+                <div className="flex flex-col items-end gap-2 shrink-0">
                   {hw.isOverdue && <Badge variant="inactive">Overdue</Badge>}
                   {(isStudent || isParent) && (
-                    <button onClick={() => handleSubmit(hw._id)} className="btn-primary text-sm">Mark Submitted</button>
+                    <button onClick={() => handleSubmit(hw._id)} className="btn-primary text-xs">Mark Submitted</button>
                   )}
                 </div>
               </div>

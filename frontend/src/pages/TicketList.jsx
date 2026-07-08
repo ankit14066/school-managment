@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ticketAPI } from '../services/authService';
 import DashboardLayout from '../components/layout/DashboardLayout';
+import GreenSelect from '../components/GreenSelect';
 import Spinner from '../components/Spinner';
 import toast from 'react-hot-toast';
 
@@ -17,8 +18,8 @@ const TicketList = () => {
   });
 
   const modules = [
-    'Dashboard', 'Students', 'Teachers', 'Classes', 'Subjects', 
-    'Attendance', 'Fees', 'Results', 'Timetable', 'Notices', 
+    'Dashboard', 'Students', 'Teachers', 'Classes', 'Subjects',
+    'Attendance', 'Fees', 'Results', 'Timetable', 'Notices',
     'Homework', 'Events', 'Messages', 'Other'
   ];
 
@@ -50,150 +51,127 @@ const TicketList = () => {
   const getPriorityStyle = (priority) => {
     switch (priority) {
       case 'High':
-        return 'text-red-700 bg-red-50 border-red-200';
+        return 'text-rose-700 bg-rose-50 border-rose-200';
       case 'Medium':
-        return 'text-yellow-700 bg-yellow-50 border-yellow-200';
+        return 'text-amber-700 bg-amber-50 border-amber-200';
       default:
-        return 'text-blue-700 bg-blue-50 border-blue-200';
+        return 'text-sky-700 bg-sky-50 border-sky-200';
     }
   };
 
   const getStatusStyle = (status) => {
     switch (status) {
       case 'Complete':
-        return 'text-green-700 bg-green-50 border-green-200';
+        return 'text-emerald-700 bg-emerald-50 border-emerald-200';
       case 'In Progress':
-        return 'text-yellow-700 bg-yellow-50 border-yellow-200';
+        return 'text-amber-700 bg-amber-50 border-amber-200';
       default:
-        return 'text-red-700 bg-red-50 border-red-200';
+        return 'text-rose-700 bg-rose-50 border-rose-200';
     }
   };
 
   return (
     <DashboardLayout>
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">Issue Tickets</h1>
-        <p className="text-sm text-gray-500">View, manage, and resolve system tickets submitted by users.</p>
+      <div className="mb-8">
+          <h1 className="page-title">🎫 Issue Tickets</h1>
+          <p className="page-subtitle">View, manage &amp; resolve system tickets</p>
       </div>
 
-      {/* Filters Section */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 mb-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="bg-white rounded-2xl border border-slate-100 p-5 shadow-[0_8px_30px_rgb(0,0,0,0.008)] mb-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <div>
-          <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Search</label>
+          <label className="label">Search</label>
           <input
             type="text"
             name="search"
             value={filters.search}
             onChange={handleFilterChange}
             placeholder="Search title, ID, or user..."
-            className="w-full px-3 py-1.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+            className="input-field"
           />
         </div>
 
         <div>
-          <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Status</label>
-          <select
-            name="status"
-            value={filters.status}
-            onChange={handleFilterChange}
-            className="w-full px-3 py-1.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent bg-white cursor-pointer"
-          >
+          <label className="label">Status</label>
+          <GreenSelect name="status" value={filters.status} onChange={handleFilterChange}>
             <option value="">All Statuses</option>
             <option value="Pending">Pending</option>
             <option value="In Progress">In Progress</option>
             <option value="Complete">Complete</option>
-          </select>
+          </GreenSelect>
         </div>
 
         <div>
-          <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Priority</label>
-          <select
-            name="priority"
-            value={filters.priority}
-            onChange={handleFilterChange}
-            className="w-full px-3 py-1.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent bg-white cursor-pointer"
-          >
+          <label className="label">Priority</label>
+          <GreenSelect name="priority" value={filters.priority} onChange={handleFilterChange}>
             <option value="">All Priorities</option>
             <option value="Low">Low</option>
             <option value="Medium">Medium</option>
             <option value="High">High</option>
-          </select>
+          </GreenSelect>
         </div>
 
         <div>
-          <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Module</label>
-          <select
-            name="moduleName"
-            value={filters.moduleName}
-            onChange={handleFilterChange}
-            className="w-full px-3 py-1.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent bg-white cursor-pointer"
-          >
+          <label className="label">Module</label>
+          <GreenSelect name="moduleName" value={filters.moduleName} onChange={handleFilterChange}>
             <option value="">All Modules</option>
             {modules.map((m) => (
               <option key={m} value={m}>{m}</option>
             ))}
-          </select>
+          </GreenSelect>
         </div>
       </div>
 
-      {/* Tickets Table */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+      <div className="bg-white rounded-2xl border border-slate-100 shadow-[0_8px_30px_rgb(0,0,0,0.008)] overflow-hidden">
         {loading ? (
           <div className="flex justify-center items-center py-20">
             <Spinner size="lg" />
           </div>
         ) : tickets.length === 0 ? (
-          <div className="text-center py-20 text-gray-500">
+          <div className="text-center py-20">
             <span className="text-4xl block mb-2">🎫</span>
-            <p className="font-semibold text-lg">No tickets found</p>
-            <p className="text-sm">Try adjusting your filters or search term.</p>
+            <p className="text-sm font-extrabold text-slate-600">No tickets found</p>
+            <p className="text-xs font-bold text-slate-400 mt-1">Try adjusting your filters or search term.</p>
           </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="bg-gray-50 border-b border-gray-200 text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                  <th className="px-6 py-4">Ticket ID</th>
-                  <th className="px-6 py-4">Title</th>
-                  <th className="px-6 py-4">Module</th>
-                  <th className="px-6 py-4">Submitted By</th>
-                  <th className="px-6 py-4">Date</th>
-                  <th className="px-6 py-4 text-center">Priority</th>
-                  <th className="px-6 py-4 text-center">Status</th>
+                <tr className="bg-slate-50/60 border-b border-slate-100">
+                  {['Ticket ID', 'Title', 'Module', 'Submitted By', 'Date', 'Priority', 'Status'].map((h) => (
+                    <th key={h} className={`table-th ${h === 'Priority' || h === 'Status' ? 'text-center' : ''}`}>{h}</th>
+                  ))}
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-100 text-sm text-gray-700">
+              <tbody className="divide-y divide-slate-50">
                 {tickets.map((ticket) => (
                   <tr
                     key={ticket._id}
                     onClick={() => navigate(`/tickets/${ticket._id}`)}
-                    className="hover:bg-gray-50 transition-colors cursor-pointer"
+                    className="hover:bg-emerald-50/15 cursor-pointer"
                   >
-                    <td className="px-6 py-4 font-mono font-semibold text-gray-900">
+                    <td className="px-5 py-3.5 font-mono text-xs font-bold text-slate-700">
                       {ticket.ticketId}
                     </td>
-                    <td className="px-6 py-4 font-medium text-gray-900 max-w-xs truncate">
+                    <td className="px-5 py-3.5 text-sm font-bold text-slate-800 max-w-xs truncate">
                       {ticket.title}
                     </td>
-                    <td className="px-6 py-4">
-                      {ticket.moduleName}
+                    <td className="px-5 py-3.5">
+                      <span className="text-xs font-bold text-slate-500 bg-slate-50 px-2 py-1 rounded-lg">{ticket.moduleName}</span>
                     </td>
-                    <td className="px-6 py-4">
-                      <div>
-                        <div className="font-medium text-gray-900">{ticket.submittedBy?.name}</div>
-                        <div className="text-xs text-gray-400 capitalize">{ticket.submittedBy?.role}</div>
-                      </div>
+                    <td className="px-5 py-3.5">
+                      <div className="text-xs font-bold text-slate-800">{ticket.submittedBy?.name}</div>
+                      <div className="text-xs font-bold text-slate-400 capitalize">{ticket.submittedBy?.role}</div>
                     </td>
-                    <td className="px-6 py-4 text-gray-500">
+                    <td className="px-5 py-3.5 text-xs font-semibold text-slate-500">
                       {new Date(ticket.createdAt).toLocaleDateString()}
                     </td>
-                    <td className="px-6 py-4 text-center">
-                      <span className={`px-2.5 py-1 text-xs font-semibold rounded-full border ${getPriorityStyle(ticket.priority)}`}>
+                    <td className="px-5 py-3.5 text-center">
+                      <span className={`px-2.5 py-1 text-xs font-extrabold rounded-xl border ${getPriorityStyle(ticket.priority)}`}>
                         {ticket.priority}
                       </span>
                     </td>
-                    <td className="px-6 py-4 text-center">
-                      <span className={`px-2.5 py-1 text-xs font-semibold rounded-full border ${getStatusStyle(ticket.status)}`}>
+                    <td className="px-5 py-3.5 text-center">
+                      <span className={`px-2.5 py-1 text-xs font-extrabold rounded-xl border ${getStatusStyle(ticket.status)}`}>
                         {ticket.status}
                       </span>
                     </td>

@@ -6,7 +6,8 @@ import Modal from '../components/Modal';
 import Spinner from '../components/Spinner';
 import toast from 'react-hot-toast';
 import Swal from 'sweetalert2';
-import { Edit, Trash2, Download, FileText, Share2 } from 'lucide-react';
+import GreenSelect from '../components/GreenSelect';
+import { Trash2, Download, FileText, Share2, Clock } from 'lucide-react';
 
 const DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
@@ -208,31 +209,38 @@ const Timetable = () => {
     <DashboardLayout>
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
         <div>
-          <h1 className="text-2xl font-bold">Timetable</h1>
-          <p className="text-gray-500 text-sm">Manage and view class schedules</p>
+          <h1 className="page-title">🗓️ Timetable</h1>
+          <p className="page-subtitle">Manage &amp; view class schedules</p>
         </div>
         {isAdmin && (
           <div className="flex items-center gap-2 flex-nowrap">
-            <select value={selectedClass} onChange={(e) => setSelectedClass(e.target.value)} className="input-field w-40 sm:w-64">
+            <GreenSelect value={selectedClass} onChange={(e) => setSelectedClass(e.target.value)} className="w-40 sm:w-64">
               <option value="">All Classes</option>
               {classes.map((c) => <option key={c._id} value={c._id}>Class {c.name}-{c.section}</option>)}
-            </select>
-            {selectedClass && <button onClick={() => { setEditing(null); setForm({ day: 'Monday', period: 1, subject: '', teacher: '', startTime: '08:00', endTime: '08:45' }); setShowModal(true); }} className="btn-primary shrink-0 whitespace-nowrap">+ Add Period</button>}
+            </GreenSelect>
+            {selectedClass && (
+              <button
+                onClick={() => { setEditing(null); setForm({ day: 'Monday', period: 1, subject: '', teacher: '', startTime: '08:00', endTime: '08:45' }); setShowModal(true); }}
+                className="btn-primary shrink-0 whitespace-nowrap text-xs"
+              >
+                + Add Period
+              </button>
+            )}
           </div>
         )}
       </div>
 
       {entries.length > 0 && (
-        <div className="card mb-6 flex gap-2 flex-wrap">
-          <button onClick={handleExportCSV} className="btn-secondary flex items-center gap-2">
-            <FileText size={18} /> Export CSV
+        <div className="bg-white rounded-2xl border border-slate-100 p-5 shadow-[0_8px_30px_rgb(0,0,0,0.008)] mb-6 flex gap-2 flex-wrap">
+          <button onClick={handleExportCSV} className="btn-secondary flex items-center gap-1.5 text-xs">
+            <FileText size={15} /> Export CSV
           </button>
-          <button onClick={handleExportPDF} className="btn-secondary flex items-center gap-2">
-            <Download size={18} /> Export PDF
+          <button onClick={handleExportPDF} className="btn-secondary flex items-center gap-1.5 text-xs">
+            <Download size={15} /> Export PDF
           </button>
           {isAdmin && selectedClass && (
-            <button onClick={handleShare} className="btn-secondary flex items-center gap-2">
-              <Share2 size={18} /> Share with Class
+            <button onClick={handleShare} className="btn-secondary flex items-center gap-1.5 text-xs">
+              <Share2 size={15} /> Share with Class
             </button>
           )}
         </div>
@@ -243,46 +251,46 @@ const Timetable = () => {
       ) : entries.length > 0 ? (
         <div>
           {/* Table View */}
-          <div className="card p-0 overflow-hidden mb-6">
+          <div className="bg-white rounded-2xl border border-slate-100 shadow-[0_8px_30px_rgb(0,0,0,0.008)] overflow-hidden mb-6">
             <div className="overflow-x-auto max-h-[520px] overflow-y-auto">
               <table className="w-full">
-                <thead className="bg-gray-50 border-b sticky top-0 z-10">
+                <thead className="bg-slate-50/60 border-b border-slate-100 sticky top-0 z-10">
                   <tr>
                     {[...(isAllClassesView ? ['Class'] : []), 'Day', 'Period', 'Subject', 'Teacher', 'Time', 'Actions'].map((h) => (
-                      <th key={h} className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase bg-gray-50">{h}</th>
+                      <th key={h} className="table-th">{h}</th>
                     ))}
                   </tr>
                 </thead>
-                <tbody className="divide-y">
+                <tbody className="divide-y divide-slate-50">
                   {entries.length === 0 ? (
-                    <tr><td colSpan={isAllClassesView ? 7 : 6} className="px-4 py-8 text-center text-gray-500">No timetable entries yet</td></tr>
+                    <tr><td colSpan={isAllClassesView ? 7 : 6} className="px-5 py-8 text-center text-sm font-bold text-slate-400">No timetable entries yet</td></tr>
                   ) : (
                     entries.map((entry) => (
-                      <tr key={entry._id} className="hover:bg-gray-50">
+                      <tr key={entry._id} className="hover:bg-emerald-50/15">
                         {isAllClassesView && (
-                          <td className="px-4 py-3 text-sm font-medium">{getClassLabel(entry)}</td>
+                          <td className="px-5 py-3.5">
+                            <span className="text-xs font-bold text-slate-500 bg-slate-50 px-2 py-1 rounded-lg">{getClassLabel(entry)}</span>
+                          </td>
                         )}
-                        <td className="px-4 py-3 text-sm font-medium">{entry.day}</td>
-                        <td className="px-4 py-3 text-sm">{entry.period}</td>
-                        <td className="px-4 py-3 text-sm">
-                          <div>
-                            <p className="font-medium">{entry.subject?.name}</p>
-                            <p className="text-xs text-gray-500">{entry.subject?.code}</p>
-                          </div>
+                        <td className="px-5 py-3.5 text-sm font-bold text-slate-800">{entry.day}</td>
+                        <td className="px-5 py-3.5">
+                          <span className="text-xs font-extrabold text-emerald-700 bg-emerald-50 px-2 py-1 rounded-lg">P{entry.period}</span>
                         </td>
-                        <td className="px-4 py-3 text-sm">{entry.teacher?.user?.name || 'TBA'}</td>
-                        <td className="px-4 py-3 text-sm text-gray-600">{entry.startTime} - {entry.endTime}</td>
-                        <td className="px-4 py-3 text-sm">
+                        <td className="px-5 py-3.5">
+                          <p className="text-sm font-bold text-slate-800">{entry.subject?.name}</p>
+                          <p className="text-xs font-bold text-slate-400 font-mono mt-0.5">{entry.subject?.code}</p>
+                        </td>
+                        <td className="px-5 py-3.5 text-xs font-semibold text-slate-600">{entry.teacher?.user?.name || 'TBA'}</td>
+                        <td className="px-5 py-3.5 text-xs font-semibold text-slate-500">{entry.startTime} – {entry.endTime}</td>
+                        <td className="px-5 py-3.5">
                           {isAdmin && (
-                            <div className="flex gap-2">
-                              <button 
-                                onClick={() => handleDelete(entry._id)} 
-                                className="p-2 hover:bg-red-100 rounded text-red-600 transition"
-                                title="Delete entry"
-                              >
-                                <Trash2 size={18} />
-                              </button>
-                            </div>
+                            <button
+                              onClick={() => handleDelete(entry._id)}
+                              className="w-7 h-7 flex items-center justify-center rounded-lg bg-rose-50 text-rose-600 hover:bg-rose-100 transition-colors"
+                              title="Delete entry"
+                            >
+                              <Trash2 size={14} />
+                            </button>
                           )}
                         </td>
                       </tr>
@@ -297,21 +305,23 @@ const Timetable = () => {
           {isAllClassesView ? (
             <div className="space-y-4">
               {Object.entries(getEntriesByClass()).map(([classLabel, grouped]) => (
-                <div key={classLabel} className="card">
-                  <h3 className="font-semibold text-lg text-primary-700 mb-4">{classLabel}</h3>
+                <div key={classLabel} className="bg-white rounded-2xl border border-slate-100 p-6 shadow-[0_8px_30px_rgb(0,0,0,0.008)]">
+                  <h3 className="text-base font-extrabold text-slate-800 tracking-tight mb-4 pb-3 border-b border-slate-50">{classLabel}</h3>
                   <div className="space-y-5">
                     {DAYS.map((day) => (
                       grouped[day]?.length > 0 && (
                         <div key={`${classLabel}-${day}`}>
-                          <h4 className="font-medium text-gray-700 mb-3">{day}</h4>
+                          <h4 className="text-xs font-extrabold text-slate-400 uppercase tracking-wider mb-3">{day}</h4>
                           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
                             {grouped[day].map((entry) => (
-                              <div key={entry._id} className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg p-4 border border-blue-200">
-                                <p className="text-xs font-semibold text-blue-600 mb-1">Period {entry.period}</p>
-                                <p className="font-bold text-gray-800">{entry.subject?.name}</p>
-                                <p className="text-sm text-gray-600 mt-1">{entry.subject?.code}</p>
-                                <p className="text-sm text-gray-700 mt-2">Teacher: {entry.teacher?.user?.name || 'TBA'}</p>
-                                <p className="text-xs text-gray-500 mt-2">{entry.startTime} - {entry.endTime}</p>
+                              <div key={entry._id} className="bg-gradient-to-br from-emerald-50 to-emerald-100/60 rounded-xl p-4 border border-emerald-200/60 hover:shadow-md hover:shadow-emerald-600/5">
+                                <p className="text-xs font-extrabold text-emerald-700 uppercase tracking-wider mb-1.5">Period {entry.period}</p>
+                                <p className="text-sm font-extrabold text-slate-800">{entry.subject?.name}</p>
+                                <p className="text-xs font-bold text-slate-400 font-mono mt-1">{entry.subject?.code}</p>
+                                <p className="text-xs font-semibold text-slate-600 mt-2">{entry.teacher?.user?.name || 'TBA'}</p>
+                                <p className="text-xs font-bold text-slate-400 mt-2 flex items-center gap-1">
+                                  <Clock size={11} /> {entry.startTime} – {entry.endTime}
+                                </p>
                               </div>
                             ))}
                           </div>
@@ -326,16 +336,18 @@ const Timetable = () => {
           <div className="space-y-4">
             {DAYS.map((day) => (
               timetable[day]?.length > 0 && (
-                <div key={day} className="card">
-                  <h3 className="font-semibold text-lg text-primary-700 mb-4">{day}</h3>
+                <div key={day} className="bg-white rounded-2xl border border-slate-100 p-6 shadow-[0_8px_30px_rgb(0,0,0,0.008)]">
+                  <h3 className="text-base font-extrabold text-slate-800 tracking-tight mb-4 pb-3 border-b border-slate-50">{day}</h3>
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
                     {timetable[day].map((entry) => (
-                      <div key={entry._id} className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg p-4 border border-blue-200">
-                        <p className="text-xs font-semibold text-blue-600 mb-1">Period {entry.period}</p>
-                        <p className="font-bold text-gray-800">{entry.subject?.name}</p>
-                        <p className="text-sm text-gray-600 mt-1">{entry.subject?.code}</p>
-                        <p className="text-sm text-gray-700 mt-2">👨‍🏫 {entry.teacher?.user?.name || 'TBA'}</p>
-                        <p className="text-xs text-gray-500 mt-2">🕒 {entry.startTime} - {entry.endTime}</p>
+                      <div key={entry._id} className="bg-gradient-to-br from-emerald-50 to-emerald-100/60 rounded-xl p-4 border border-emerald-200/60 hover:shadow-md hover:shadow-emerald-600/5">
+                        <p className="text-xs font-extrabold text-emerald-700 uppercase tracking-wider mb-1.5">Period {entry.period}</p>
+                        <p className="text-sm font-extrabold text-slate-800">{entry.subject?.name}</p>
+                        <p className="text-xs font-bold text-slate-400 font-mono mt-1">{entry.subject?.code}</p>
+                        <p className="text-xs font-semibold text-slate-600 mt-2">{entry.teacher?.user?.name || 'TBA'}</p>
+                        <p className="text-xs font-bold text-slate-400 mt-2 flex items-center gap-1">
+                          <Clock size={11} /> {entry.startTime} – {entry.endTime}
+                        </p>
                       </div>
                     ))}
                   </div>
@@ -346,8 +358,10 @@ const Timetable = () => {
           )}
         </div>
       ) : (
-        <div className="card text-center py-12">
-          <p className="text-gray-500 text-lg">No timetable entries found</p>
+        <div className="bg-white rounded-2xl border border-slate-100 shadow-[0_8px_30px_rgb(0,0,0,0.008)] text-center py-16">
+          <span className="text-4xl block mb-2">🗓️</span>
+          <p className="text-sm font-extrabold text-slate-600">No timetable entries found</p>
+          <p className="text-xs font-bold text-slate-400 mt-1">Select a class and add periods to get started.</p>
         </div>
       )}
 
@@ -356,9 +370,9 @@ const Timetable = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="label">Day *</label>
-              <select className="input-field" value={form.day} onChange={(e) => setForm({ ...form, day: e.target.value })} required>
+              <GreenSelect value={form.day} onChange={(e) => setForm({ ...form, day: e.target.value })} required>
                 {DAYS.map((d) => <option key={d} value={d}>{d}</option>)}
-              </select>
+              </GreenSelect>
             </div>
             <div>
               <label className="label">Period *</label>
@@ -366,17 +380,17 @@ const Timetable = () => {
             </div>
             <div>
               <label className="label">Subject *</label>
-              <select className="input-field" value={form.subject} onChange={(e) => setForm({ ...form, subject: e.target.value })} required>
+              <GreenSelect value={form.subject} onChange={(e) => setForm({ ...form, subject: e.target.value })} required>
                 <option value="">Select Subject</option>
                 {subjects.map((s) => <option key={s._id} value={s._id}>{s.name} ({s.code})</option>)}
-              </select>
+              </GreenSelect>
             </div>
             <div>
               <label className="label">Teacher *</label>
-              <select className="input-field" value={form.teacher} onChange={(e) => setForm({ ...form, teacher: e.target.value })} required>
+              <GreenSelect value={form.teacher} onChange={(e) => setForm({ ...form, teacher: e.target.value })} required>
                 <option value="">Select Teacher</option>
                 {teachers.map((t) => <option key={t._id} value={t._id}>{t.user?.name}</option>)}
-              </select>
+              </GreenSelect>
             </div>
             <div>
               <label className="label">Start Time *</label>

@@ -3,12 +3,15 @@
 @tailwind utilities;
 
 @layer base {
+  html {
+    font-size: 16px;
+  }
+
   body {
-    @apply bg-slate-50 text-slate-800 antialiased;
+    @apply bg-slate-50/50 text-slate-800 antialiased text-base;
     font-family: 'Outfit', sans-serif;
   }
 
-  /* Custom Premium Scrollbar */
   ::-webkit-scrollbar {
     width: 6px;
     height: 6px;
@@ -21,64 +24,70 @@
     border-radius: 9999px;
   }
   ::-webkit-scrollbar-thumb:hover {
-    background: #94a3b8;
+    background: #10a359;
   }
 }
 
 @layer components {
-  /* School Green Theme */
   .btn-primary {
-    @apply bg-gradient-to-r from-primary-600 to-primary-700 text-white px-5 py-2.5 rounded-xl font-semibold shadow-sm
-           hover:shadow hover:from-primary-700 hover:to-primary-800
-           focus:outline-none
-           focus:ring-4
-           focus:ring-primary-500/20
-           transition-all duration-200
-           transform active:scale-[0.98]
-           disabled:opacity-50
-           disabled:cursor-not-allowed
-           disabled:pointer-events-none;
+    @apply bg-emerald-600 text-white px-5 py-3 rounded-xl font-bold text-sm
+           hover:bg-emerald-700
+           focus:outline-none focus:ring-2 focus:ring-emerald-500/30
+           disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none;
   }
 
   .btn-secondary {
-    @apply bg-white text-slate-700 border border-slate-200 px-5 py-2.5 rounded-xl font-semibold shadow-sm
+    @apply bg-white text-slate-700 border border-slate-200 px-5 py-3 rounded-xl font-bold text-sm
            hover:bg-slate-50 hover:text-slate-900 hover:border-slate-300
-           focus:outline-none
-           focus:ring-4
-           focus:ring-primary-500/10
-           transition-all duration-200
-           transform active:scale-[0.98];
+           focus:outline-none focus:ring-2 focus:ring-emerald-500/20;
   }
 
   .btn-danger {
-    @apply bg-gradient-to-r from-red-500 to-red-600 text-white px-5 py-2.5 rounded-xl font-semibold shadow-sm
-           hover:from-red-600 hover:to-red-700 hover:shadow
-           focus:outline-none
-           focus:ring-4
-           focus:ring-red-500/20
-           transition-all duration-200
-           transform active:scale-[0.98];
+    @apply bg-rose-600 text-white px-5 py-3 rounded-xl font-bold text-sm
+           hover:bg-rose-700
+           focus:outline-none focus:ring-2 focus:ring-rose-500/30;
   }
 
   .input-field {
-    @apply w-full px-4 py-2.5 border border-slate-200 rounded-xl text-slate-800 bg-slate-50/30 text-sm
+    @apply w-full px-4 py-3 border border-slate-200 rounded-xl text-slate-800 bg-white text-base
            placeholder:text-slate-400
-           focus:outline-none
-           focus:ring-4
-           focus:ring-primary-500/10
-           focus:border-primary-500
-           focus:bg-white
-           transition-all duration-200;
+           focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500;
+  }
+
+  .input-field-error {
+    @apply border-rose-400 focus:border-rose-500 focus:ring-rose-500/20;
   }
 
   .card {
-    @apply bg-white rounded-2xl border border-slate-100/80 p-6 shadow-[0_8px_30px_rgb(0,0,0,0.015)]
-           hover:shadow-[0_12px_32px_rgb(0,0,0,0.035)] hover:border-slate-200/50
-           transition-all duration-300;
+    @apply bg-white rounded-2xl border border-slate-100 p-6 shadow-[0_8px_30px_rgb(0,0,0,0.012)];
   }
 
   .label {
-    @apply block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5;
+    @apply block text-sm font-bold text-slate-500 uppercase tracking-wide mb-2;
+  }
+
+  .field-error {
+    @apply text-sm font-semibold text-rose-600 mt-1;
+  }
+
+  .page-title {
+    @apply text-2xl lg:text-3xl font-extrabold text-slate-800 tracking-tight;
+  }
+
+  .page-subtitle {
+    @apply text-sm font-bold text-slate-400 mt-1 uppercase tracking-wider;
+  }
+
+  .table-th {
+    @apply text-left px-5 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider bg-slate-50/60;
+  }
+
+  .table-td {
+    @apply px-5 py-4 text-base font-semibold text-slate-700;
+  }
+
+  .glass-card {
+    @apply bg-white border border-slate-100 shadow-xl shadow-slate-900/5 rounded-3xl p-8;
   }
 }
 

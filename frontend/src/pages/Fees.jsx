@@ -88,43 +88,93 @@ const Fees = () => {
   return (
     <DashboardLayout>
       <div className="flex flex-col sm:flex-row justify-between gap-4 mb-8">
-        <div><h1 className="text-2xl font-bold">Fees Management</h1></div>
+        <div>
+          <h1 className="page-title">💰 Fees Management</h1>
+          <p className="page-subtitle">Track collections, payments &amp; fee structures</p>
+        </div>
         <div className="flex gap-2">
-          <button onClick={() => setShowStructureModal(true)} className="btn-secondary">Fee Structure</button>
-          <button onClick={() => setShowModal(true)} className="btn-primary">+ Add Fee</button>
+          <button onClick={() => setShowStructureModal(true)} className="btn-secondary text-xs">Fee Structure</button>
+          <button onClick={() => setShowModal(true)} className="btn-primary text-xs">+ Add Fee Record</button>
         </div>
       </div>
 
       {report && (
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-          {[{ l: 'Total Due', v: `₹${report.totalDue}` }, { l: 'Collected', v: `₹${report.totalCollected}` }, { l: 'Pending', v: `₹${report.pendingAmount}` }, { l: 'Paid Records', v: report.paid }].map((s) => (
-            <div key={s.l} className="card text-center"><p className="text-xs text-gray-500">{s.l}</p><p className="text-xl font-bold mt-1">{s.v}</p></div>
-          ))}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-5 mb-8">
+          {
+            [
+              { l: 'Total Due', v: `₹${(report.totalDue || 0).toLocaleString('en-IN')}`, color: 'bg-purple-50 text-purple-600 border-purple-100' },
+              { l: 'Collected', v: `₹${(report.totalCollected || 0).toLocaleString('en-IN')}`, color: 'bg-emerald-50 text-emerald-600 border-emerald-100' },
+              { l: 'Pending', v: `₹${(report.pendingAmount || 0).toLocaleString('en-IN')}`, color: 'bg-amber-50 text-amber-600 border-amber-100' },
+              { l: 'Paid Records', v: report.paid || 0, color: 'bg-sky-50 text-sky-600 border-sky-100' },
+            ].map((s) => (
+              <div key={s.l} className="bg-white border border-slate-100 rounded-2xl p-5 shadow-[0_8px_30px_rgb(0,0,0,0.008)] hover:-translate-y-0.5">
+                <div className={`w-9 h-9 rounded-xl border flex items-center justify-center mb-3 ${s.color}`}>
+                  <span className="text-sm">💳</span>
+                </div>
+                <p className="text-xs font-extrabold text-slate-400 uppercase tracking-wider mb-1">{s.l}</p>
+                <p className="text-2xl font-extrabold text-slate-800">{s.v}</p>
+              </div>
+            ))
+          }
         </div>
       )}
 
       {loading ? <div className="flex justify-center py-12"><Spinner size="lg" /></div> : (
-        <div className="card p-0 overflow-hidden">
-          <table className="w-full">
-            <thead className="bg-gray-50 border-b"><tr>{['Student','Type','Amount','Paid','Status','Month','Actions'].map((h) => <th key={h} className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase">{h}</th>)}</tr></thead>
-            <tbody className="divide-y">
-              {fees.map((f) => (
-                <tr key={f._id}>
-                  <td className="px-4 py-3 text-sm">{f.student?.user?.name}</td>
-                  <td className="px-4 py-3 text-sm capitalize">{f.type}</td>
-                  <td className="px-4 py-3 text-sm">₹{f.amount}</td>
-                  <td className="px-4 py-3 text-sm">₹{f.paidAmount}</td>
-                  <td className="px-4 py-3"><Badge variant={statusVariant[f.status]}>{f.status}</Badge></td>
-                  <td className="px-4 py-3 text-sm">{f.month}</td>
-                  <td className="px-4 py-3 text-sm space-x-2">
-                    {f.status !== 'paid' && <button onClick={() => { setSelectedFee(f); setPayForm({ paidAmount: String(f.amount - f.paidAmount), paymentMethod: 'cash' }); setShowPayModal(true); }} className="text-green-600 hover:underline">Pay</button>}
-                    {f.receiptNumber && <button onClick={() => printReceipt(f._id)} className="text-blue-600 hover:underline">Receipt</button>}
-                  </td>
+        <div className="bg-white rounded-2xl border border-slate-100 shadow-[0_8px_30px_rgb(0,0,0,0.008)] overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead className="bg-slate-50/60 border-b border-slate-100">
+                <tr>
+                  {['Student','Type','Amount','Paid','Status','Month','Due Date','Actions'].map((h) => (
+                    <th key={h} className="text-left px-5 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider">{h}</th>
+                  ))}
                 </tr>
-              ))}
-            </tbody>
-          </table>
-          <div className="px-4 pb-4"><Pagination page={page} pages={pages} onPageChange={setPage} /></div>
+              </thead>
+              <tbody className="divide-y divide-slate-50">
+                {fees.length === 0 ? (
+                  <tr><td colSpan={8} className="px-5 py-12 text-center text-xs font-bold text-slate-400">No fee records found.</td></tr>
+                ) : fees.map((f) => (
+                  <tr key={f._id} className="hover:bg-emerald-50/15">
+                    <td className="px-5 py-3.5">
+                      <div className="flex items-center gap-2.5">
+                        <div className="w-7 h-7 rounded-xl bg-emerald-100 flex items-center justify-center font-bold text-emerald-700 text-xs shrink-0">
+                          {f.student?.user?.name?.[0]?.toUpperCase() || '?'}
+                        </div>
+                        <span className="text-xs font-bold text-slate-800">{f.student?.user?.name}</span>
+                      </div>
+                    </td>
+                    <td className="px-5 py-3.5">
+                      <span className="text-xs font-bold text-slate-500 capitalize bg-slate-50 px-2 py-1 rounded-lg">{f.type}</span>
+                    </td>
+                    <td className="px-5 py-3.5 text-sm font-extrabold text-slate-800">₹{(f.amount || 0).toLocaleString('en-IN')}</td>
+                    <td className="px-5 py-3.5 text-sm font-bold text-emerald-700">₹{(f.paidAmount || 0).toLocaleString('en-IN')}</td>
+                    <td className="px-5 py-3.5"><Badge variant={statusVariant[f.status]}>{f.status}</Badge></td>
+                    <td className="px-5 py-3.5 text-xs font-semibold text-slate-500">{f.month}</td>
+                    <td className="px-5 py-3.5 text-xs font-semibold text-slate-500">{formatDate(f.dueDate)}</td>
+                    <td className="px-5 py-3.5">
+                      <div className="flex items-center gap-1.5">
+                        {f.status !== 'paid' && (
+                          <button
+                            onClick={() => { setSelectedFee(f); setPayForm({ paidAmount: String(f.amount - f.paidAmount), paymentMethod: 'cash' }); setShowPayModal(true); }}
+                            className="text-xs font-extrabold text-white bg-emerald-600 hover:bg-emerald-700 px-2.5 py-1 rounded-lg transition-colors"
+                          >Pay</button>
+                        )}
+                        {f.receiptNumber && (
+                          <button
+                            onClick={() => printReceipt(f._id)}
+                            className="text-xs font-extrabold text-sky-700 bg-sky-50 hover:bg-sky-100 px-2.5 py-1 rounded-lg transition-colors flex items-center gap-1"
+                          >
+                            <Printer size={10} /> Receipt
+                          </button>
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <div className="px-5 pb-4 pt-3 border-t border-slate-50"><Pagination page={page} pages={pages} onPageChange={setPage} /></div>
         </div>
       )}
 

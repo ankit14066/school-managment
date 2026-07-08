@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ticketAPI } from '../services/authService';
 import DashboardLayout from '../components/layout/DashboardLayout';
+import GreenSelect from '../components/GreenSelect';
 import toast from 'react-hot-toast';
 
 const SubmitTicket = () => {
@@ -17,8 +18,8 @@ const SubmitTicket = () => {
   const [loading, setLoading] = useState(false);
 
   const modules = [
-    'Dashboard', 'Students', 'Teachers', 'Classes', 'Subjects', 
-    'Attendance', 'Fees', 'Results', 'Timetable', 'Notices', 
+    'Dashboard', 'Students', 'Teachers', 'Classes', 'Subjects',
+    'Attendance', 'Fees', 'Results', 'Timetable', 'Notices',
     'Homework', 'Events', 'Messages', 'Other'
   ];
 
@@ -60,116 +61,101 @@ const SubmitTicket = () => {
 
   return (
     <DashboardLayout>
-      <div className="w-full">
-        <div className="mb-6">
-          <h1 className="text-2xl font-bold text-gray-900">Report an Issue / Support</h1>
-          <p className="text-sm text-gray-500">Found a bug or need help? Tell us about the issue and we'll fix it.</p>
+      <div className="mb-8">
+        <h1 className="page-title">🎫 Report an Issue</h1>
+        <p className="page-subtitle">Found a bug or need help? Submit a support ticket</p>
+      </div>
+
+      <form onSubmit={handleSubmit} className="bg-white rounded-2xl border border-slate-100 p-6 shadow-[0_8px_30px_rgb(0,0,0,0.008)] space-y-6 max-w-3xl">
+        <div>
+          <label className="label">Problem Title *</label>
+          <input
+            type="text"
+            name="title"
+            value={formData.title}
+            onChange={handleChange}
+            placeholder="e.g., Attendance page fails to load student names"
+            className="input-field"
+            required
+          />
         </div>
 
-        <form onSubmit={handleSubmit} className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 space-y-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">Problem Title *</label>
+            <label className="label">Module Name *</label>
+            <GreenSelect name="moduleName" value={formData.moduleName} onChange={handleChange}>
+              {modules.map((m) => (
+                <option key={m} value={m}>{m}</option>
+              ))}
+            </GreenSelect>
+          </div>
+
+          <div>
+            <label className="label">Priority *</label>
+            <div className="flex gap-4 items-center h-10">
+              {['Low', 'Medium', 'High'].map((p) => (
+                <label key={p} className="inline-flex items-center cursor-pointer">
+                  <input
+                    type="radio"
+                    name="priority"
+                    value={p}
+                    checked={formData.priority === p}
+                    onChange={handleChange}
+                    className="h-4 w-4 accent-emerald-600"
+                  />
+                  <span className="ml-2 text-xs font-bold text-slate-600">{p}</span>
+                </label>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <label className="label">Detailed Description *</label>
+          <textarea
+            name="description"
+            value={formData.description}
+            onChange={handleChange}
+            rows={4}
+            placeholder="Explain the steps to reproduce the error or detailed context..."
+            className="input-field resize-none"
+            required
+          />
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label className="label">Reference URL (Optional)</label>
             <input
               type="text"
-              name="title"
-              value={formData.title}
+              name="referenceUrl"
+              value={formData.referenceUrl}
               onChange={handleChange}
-              placeholder="e.g., Attendance page fails to load student names"
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
-              required
+              placeholder="e.g., http://localhost:3000/attendance"
+              className="input-field"
             />
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">Module Name *</label>
-              <select
-                name="moduleName"
-                value={formData.moduleName}
-                onChange={handleChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all bg-white"
-              >
-                {modules.map((m) => (
-                  <option key={m} value={m}>{m}</option>
-                ))}
-              </select>
-            </div>
-
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">Priority *</label>
-              <div className="flex gap-4 items-center h-10">
-                {['Low', 'Medium', 'High'].map((p) => (
-                  <label key={p} className="inline-flex items-center cursor-pointer">
-                    <input
-                      type="radio"
-                      name="priority"
-                      value={p}
-                      checked={formData.priority === p}
-                      onChange={handleChange}
-                      className="form-radio h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300"
-                    />
-                    <span className="ml-2 text-sm text-gray-700">{p}</span>
-                  </label>
-                ))}
-              </div>
-            </div>
-          </div>
-
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">Detailed Description *</label>
-            <textarea
-              name="description"
-              value={formData.description}
-              onChange={handleChange}
-              rows={4}
-              placeholder="Explain the steps to reproduce the error or detailed context..."
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all resize-none"
-              required
-            ></textarea>
+            <label className="label">Screenshot / Photo (Optional)</label>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleFileChange}
+              className="input-field"
+            />
           </div>
+        </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">Reference URL (Optional)</label>
-              <input
-                type="text"
-                name="referenceUrl"
-                value={formData.referenceUrl}
-                onChange={handleChange}
-                placeholder="e.g., http://localhost:3000/attendance"
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">Screenshot / Photo (Optional)</label>
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handleFileChange}
-                className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-green-50 file:text-green-700 hover:file:bg-green-100 transition-all cursor-pointer"
-              />
-            </div>
-          </div>
-
-          <div className="flex gap-4 justify-end pt-4 border-t border-gray-100">
-            <button
-              type="button"
-              onClick={() => navigate(-1)}
-              className="px-5 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              disabled={loading}
-              className="px-5 py-2 bg-green-700 text-white rounded-lg text-sm font-medium hover:bg-green-800 disabled:opacity-50 transition-colors"
-            >
-              {loading ? 'Submitting...' : 'Submit Ticket'}
-            </button>
-          </div>
-        </form>
-      </div>
+        <div className="flex gap-3 justify-end pt-4 border-t border-slate-50">
+          <button type="button" onClick={() => navigate(-1)} className="btn-secondary text-xs">
+            Cancel
+          </button>
+          <button type="submit" disabled={loading} className="btn-primary text-xs">
+            {loading ? 'Submitting...' : 'Submit Ticket'}
+          </button>
+        </div>
+      </form>
     </DashboardLayout>
   );
 };

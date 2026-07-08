@@ -8,6 +8,7 @@ import Pagination from "../components/Pagination";
 import Spinner from "../components/Spinner";
 import toast from "react-hot-toast";
 import Swal from "sweetalert2";
+import { validateForm, rules, firstError } from "../utils/formValidation";
 import {
   Edit,
   Trash2,
@@ -64,6 +65,7 @@ const Students = () => {
   const [importing, setImporting] = useState(false);
   const [importReport, setImportReport] = useState(null);
   const [selectedIds, setSelectedIds] = useState([]);
+  const [formErrors, setFormErrors] = useState({});
 
   const fetchStudents = async () => {
     setLoading(true);
@@ -106,10 +108,12 @@ const Students = () => {
     setEditing(null);
     setForm(emptyForm);
     setPhoto(null);
+    setFormErrors({});
     setShowModal(true);
   };
 
   const openEdit = (student) => {
+    setFormErrors({});
     setEditing(student);
     setForm({
       name: student.user?.name || "",
@@ -148,6 +152,25 @@ const Students = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    const errors = validateForm({
+      name: { value: form.name, validators: [rules.required] },
+      email: { value: form.email, validators: [rules.required, rules.email] },
+      rollNumber: { value: form.rollNumber, validators: [rules.required] },
+      class: { value: form.class, validators: [rules.required] },
+      dateOfBirth: { value: form.dateOfBirth, validators: [rules.required] },
+      parentName: { value: form.parentName, validators: [rules.required] },
+      phone: { value: form.phone, validators: [rules.required, rules.phone] },
+      parentEmail: { value: form.parentEmail, validators: [rules.email] },
+    });
+
+    if (Object.keys(errors).length > 0) {
+      setFormErrors(errors);
+      toast.error(firstError(errors));
+      return;
+    }
+
+    setFormErrors({});
     const fd = new FormData();
     Object.entries(form).forEach(([k, v]) => {
       if ((v && k !== "password") || (k === "password" && v)) fd.append(k, v);
@@ -386,41 +409,38 @@ Alex Williams,alex.williams@example.com,105,${classId},2008-09-08,other,O-,Micha
     <DashboardLayout>
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
         <div>
-          <h1 className="text-2xl font-bold">Students</h1>
-          <p className="text-gray-500 text-sm">Manage student records</p>
+          <h1 className="page-title">🎓 Students</h1>
+          <p className="page-subtitle">Manage student records &amp; enrolments</p>
         </div>
         <div className="flex gap-2 flex-wrap">
           <button
             onClick={downloadSampleCSV}
-            className="btn-secondary flex items-center gap-2"
+            className="btn-secondary flex items-center gap-1.5 text-xs"
           >
-            <Download size={18} /> Sample CSV
+            <Download size={15} /> Sample CSV
           </button>
           <button
             onClick={() => {
               setImportReport(null);
               setShowImportModal(true);
             }}
-            className="btn-secondary flex items-center gap-2"
+            className="btn-secondary flex items-center gap-1.5 text-xs"
           >
-            <Upload size={18} /> Import CSV
+            <Upload size={15} /> Import CSV
           </button>
           <button
             onClick={handleExportCSV}
-            className="btn-secondary flex items-center gap-2"
+            className="btn-secondary flex items-center gap-1.5 text-xs"
           >
-            <FileText size={18} /> Export CSV
+            <FileText size={15} /> Export CSV
           </button>
-          {/* <button onClick={handleExportPDF} className="btn-secondary flex items-center gap-2">
-            <Download size={18} /> Export PDF
-          </button> */}
-          <button onClick={openCreate} className="btn-primary">
+          <button onClick={openCreate} className="btn-primary flex items-center gap-1.5 text-xs">
             + Add Student
           </button>
         </div>
       </div>
 
-      <div className="card mb-6 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-6">
+      <div className="bg-white rounded-2xl border border-slate-100 p-5 shadow-[0_8px_30px_rgb(0,0,0,0.008)] mb-6 grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-6">
         <input
           placeholder="Search by name, roll no..."
           value={search}
@@ -479,15 +499,16 @@ Alex Williams,alex.williams@example.com,105,${classId},2008-09-08,other,O-,Micha
       </div>
 
       {selectedIds.length > 0 && (
-        <div className="card mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <p className="text-sm font-medium text-gray-700">
-            {selectedIds.length} students selected
+        <div className="bg-rose-50 border border-rose-100 rounded-2xl mb-4 p-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <p className="text-xs font-bold text-rose-700">
+            <span className="bg-rose-600 text-white px-2 py-0.5 rounded-lg mr-2">{selectedIds.length}</span>
+            students selected for bulk operation
           </p>
           <button
             onClick={handleBulkDelete}
-            className="btn-danger flex items-center justify-center gap-2"
+            className="btn-danger flex items-center justify-center gap-2 text-xs"
           >
-            <CheckSquare size={18} /> Delete Selected
+            <CheckSquare size={15} /> Delete Selected
           </button>
         </div>
       )}
@@ -497,12 +518,12 @@ Alex Williams,alex.williams@example.com,105,${classId},2008-09-08,other,O-,Micha
           <Spinner size="lg" />
         </div>
       ) : (
-        <div className="card p-0 overflow-hidden">
-          <div className="overflow-x-auto max-h-[573px] overflow-y-auto">
+        <div className="bg-white rounded-2xl border border-slate-100 shadow-[0_8px_30px_rgb(0,0,0,0.008)] overflow-hidden">
+          <div className="overflow-x-auto max-h-[560px] overflow-y-auto">
             <table className="w-full">
-              <thead className="bg-gray-50 border-b sticky top-0 z-10">
+              <thead className="bg-slate-50/60 border-b border-slate-100 sticky top-0 z-10">
                 <tr>
-                  <th className="px-4 py-3 bg-gray-50">
+                  <th className="px-5 py-4 bg-slate-50/60">
                     <input
                       type="checkbox"
                       checked={
@@ -510,12 +531,12 @@ Alex Williams,alex.williams@example.com,105,${classId},2008-09-08,other,O-,Micha
                         selectedIds.length === students.length
                       }
                       onChange={toggleAllStudents}
-                      className="h-4 w-4 rounded border-gray-300 text-primary-600"
+                      className="h-4 w-4 rounded-md border-slate-300 accent-emerald-600"
                     />
                   </th>
                   {[
                     "Roll No",
-                    "Name",
+                    "Student",
                     "Class",
                     "Gender",
                     "Blood",
@@ -525,83 +546,95 @@ Alex Williams,alex.williams@example.com,105,${classId},2008-09-08,other,O-,Micha
                   ].map((h) => (
                     <th
                       key={h}
-                      className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase bg-gray-50"
+                      className="table-th"
                     >
                       {h}
                     </th>
                   ))}
                 </tr>
               </thead>
-              <tbody className="divide-y">
+              <tbody className="divide-y divide-slate-50">
                 {students.length === 0 ? (
                   <tr>
                     <td
                       colSpan={9}
-                      className="px-4 py-8 text-center text-gray-500"
+                      className="px-5 py-12 text-center text-sm font-bold text-slate-400"
                     >
-                      No students found
+                      No students found. Try adjusting filters.
                     </td>
                   </tr>
                 ) : (
-                  students.map((s) => (
-                    <tr key={s._id} className="hover:bg-gray-50">
-                      <td className="px-4 py-3">
-                        <input
-                          type="checkbox"
-                          checked={selectedIds.includes(s._id)}
-                          onChange={() => toggleStudentSelection(s._id)}
-                          className="h-4 w-4 rounded border-gray-300 text-primary-600"
-                        />
-                      </td>
-                      <td className="px-4 py-3 text-sm font-mono">
-                        {s.rollNumber}
-                      </td>
-                      <td className="px-4 py-3 text-sm font-medium">
-                        {s.user?.name}
-                      </td>
-                      <td className="px-4 py-3 text-sm">
-                        {s.class ? `${s.class.name}-${s.class.section}` : "—"}
-                      </td>
-                      <td className="px-4 py-3 text-sm capitalize">
-                        {s.gender || "—"}
-                      </td>
-                      <td className="px-4 py-3 text-sm">
-                        {s.bloodGroup || "—"}
-                      </td>
-                      <td className="px-4 py-3 text-sm">{s.parentName}</td>
-                      <td className="px-4 py-3 text-sm">{s.phone}</td>
-                      <td className="px-4 py-3 text-sm">
-                        <div className="flex gap-3">
-                          <button
-                            onClick={() => openProfile(s)}
-                            className="p-2 hover:bg-blue-100 rounded text-blue-600 transition"
-                            title="View student"
-                          >
-                            <Eye size={18} />
-                          </button>
-                          <button
-                            onClick={() => openEdit(s)}
-                            className="p-2 hover:bg-yellow-100 rounded text-yellow-600 transition"
-                            title="Edit student"
-                          >
-                            <Edit size={18} />
-                          </button>
-                          <button
-                            onClick={() => handleDelete(s._id)}
-                            className="p-2 hover:bg-red-100 rounded text-red-600 transition"
-                            title="Delete student"
-                          >
-                            <Trash2 size={18} />
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))
+                  students.map((s) => {
+                    const initials = s.user?.name?.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase() || '??';
+                    const colors = ['bg-blue-100 text-blue-700','bg-emerald-100 text-emerald-700','bg-purple-100 text-purple-700','bg-pink-100 text-pink-700','bg-amber-100 text-amber-700','bg-indigo-100 text-indigo-700'];
+                    const colorIndex = s.rollNumber ? parseInt(s.rollNumber) % colors.length : 0;
+                    return (
+                      <tr key={s._id} className="hover:bg-emerald-50/15">
+                        <td className="px-5 py-3.5">
+                          <input
+                            type="checkbox"
+                            checked={selectedIds.includes(s._id)}
+                            onChange={() => toggleStudentSelection(s._id)}
+                            className="h-4 w-4 rounded-md border-slate-300 accent-emerald-600"
+                          />
+                        </td>
+                        <td className="px-5 py-3.5">
+                          <span className="text-sm font-bold text-slate-600 font-mono bg-slate-50 px-2 py-1 rounded-lg border border-slate-100">{s.rollNumber}</span>
+                        </td>
+                        <td className="px-5 py-3.5">
+                          <div className="flex items-center gap-3">
+                            <div className={`w-9 h-9 rounded-xl flex items-center justify-center font-bold text-sm shrink-0 ${colors[colorIndex]}`}>
+                              {initials}
+                            </div>
+                            <span className="text-base font-bold text-slate-800">{s.user?.name}</span>
+                          </div>
+                        </td>
+                        <td className="px-5 py-3.5">
+                          <span className="text-sm font-bold text-slate-500 bg-slate-50 px-2 py-1 rounded-lg">
+                            {s.class ? `Class ${s.class.name} • ${s.class.section}` : "—"}
+                          </span>
+                        </td>
+                        <td className="table-td capitalize">{s.gender || "—"}</td>
+                        <td className="px-5 py-3.5">
+                          {s.bloodGroup ? (
+                            <span className="text-xs font-extrabold text-rose-600 bg-rose-50 px-2 py-0.5 rounded-md border border-rose-100">{s.bloodGroup}</span>
+                          ) : <span className="text-slate-400">—</span>}
+                        </td>
+                        <td className="table-td">{s.parentName}</td>
+                        <td className="table-td">{s.phone}</td>
+                        <td className="px-5 py-3.5">
+                          <div className="flex items-center gap-1.5">
+                            <button
+                              onClick={() => openProfile(s)}
+                              className="w-7 h-7 flex items-center justify-center rounded-lg bg-sky-50 text-sky-600 hover:bg-sky-100 transition-colors"
+                              title="View student"
+                            >
+                              <Eye size={14} />
+                            </button>
+                            <button
+                              onClick={() => openEdit(s)}
+                              className="w-7 h-7 flex items-center justify-center rounded-lg bg-amber-50 text-amber-600 hover:bg-amber-100 transition-colors"
+                              title="Edit student"
+                            >
+                              <Edit size={14} />
+                            </button>
+                            <button
+                              onClick={() => handleDelete(s._id)}
+                              className="w-7 h-7 flex items-center justify-center rounded-lg bg-rose-50 text-rose-600 hover:bg-rose-100 transition-colors"
+                              title="Delete student"
+                            >
+                              <Trash2 size={14} />
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })
                 )}
               </tbody>
             </table>
           </div>
-          <div className="px-4 pb-4">
+          <div className="px-5 pb-4 pt-3 border-t border-slate-50">
             <Pagination page={page} pages={pages} onPageChange={setPage} />
           </div>
         </div>
@@ -618,21 +651,23 @@ Alex Williams,alex.williams@example.com,105,${classId},2008-09-08,other,O-,Micha
             <div>
               <label className="label">Name *</label>
               <input
-                className="input-field"
+                className={`input-field ${formErrors.name ? 'input-field-error' : ''}`}
                 value={form.name}
                 onChange={(e) => setForm({ ...form, name: e.target.value })}
                 required
               />
+              {formErrors.name && <p className="field-error">{formErrors.name}</p>}
             </div>
             <div>
               <label className="label">Email *</label>
               <input
                 type="email"
-                className="input-field"
+                className={`input-field ${formErrors.email ? 'input-field-error' : ''}`}
                 value={form.email}
                 onChange={(e) => setForm({ ...form, email: e.target.value })}
                 required
               />
+              {formErrors.email && <p className="field-error">{formErrors.email}</p>}
             </div>
             {!editing && (
               <div>
@@ -662,7 +697,6 @@ Alex Williams,alex.williams@example.com,105,${classId},2008-09-08,other,O-,Micha
             <div>
               <label className="label">Class *</label>
               <GreenSelect
-                
                 value={form.class}
                 onChange={(e) => {
                   setForm({
@@ -673,6 +707,7 @@ Alex Williams,alex.williams@example.com,105,${classId},2008-09-08,other,O-,Micha
                   suggestRollNumber(e.target.value);
                 }}
                 required
+                error={formErrors.class}
               >
                 <option value="">Select Class</option>
                 {classes.map((c) => (
@@ -738,11 +773,14 @@ Alex Williams,alex.williams@example.com,105,${classId},2008-09-08,other,O-,Micha
             <div>
               <label className="label">Phone *</label>
               <input
-                className="input-field"
+                className={`input-field ${formErrors.phone ? 'input-field-error' : ''}`}
                 value={form.phone}
                 onChange={(e) => setForm({ ...form, phone: e.target.value })}
                 required
+                pattern="[6-9][0-9]{9}"
+                title="Enter a valid 10-digit Indian mobile number"
               />
+              {formErrors.phone && <p className="field-error">{formErrors.phone}</p>}
             </div>
             <div className="sm:col-span-2">
               <label className="label">Address</label>
@@ -809,41 +847,34 @@ Alex Williams,alex.williams@example.com,105,${classId},2008-09-08,other,O-,Micha
         title="Student Profile"
       >
         {viewStudent && (
-          <div className="space-y-3 text-sm">
-            {viewStudent.photo && (
-              <img
-                src={`${API_BASE}${viewStudent.photo}`}
-                alt=""
-                className="w-24 h-24 rounded-full object-cover"
-              />
-            )}
-            <p>
-              <span className="text-gray-500">Name:</span>{" "}
-              <strong>{viewStudent.user?.name}</strong>
-            </p>
-            <p>
-              <span className="text-gray-500">Roll No:</span>{" "}
-              {viewStudent.rollNumber}
-            </p>
-            <p>
-              <span className="text-gray-500">Class:</span>{" "}
-              {viewStudent.class?.name}-{viewStudent.class?.section}
-            </p>
-            <p>
-              <span className="text-gray-500">DOB:</span>{" "}
-              {new Date(viewStudent.dateOfBirth).toLocaleDateString()}
-            </p>
-            <p>
-              <span className="text-gray-500">Parent:</span>{" "}
-              {viewStudent.parentName}
-            </p>
-            <p>
-              <span className="text-gray-500">Phone:</span> {viewStudent.phone}
-            </p>
-            <p>
-              <span className="text-gray-500">Address:</span>{" "}
-              {viewStudent.address || "—"}
-            </p>
+          <div className="space-y-4">
+            <div className="flex items-center gap-4 pb-4 border-b border-slate-100">
+              <div className="w-16 h-16 rounded-2xl bg-emerald-100 flex items-center justify-center font-extrabold text-emerald-700 text-2xl">
+                {viewStudent.photo
+                  ? <img src={`${API_BASE}${viewStudent.photo}`} alt="" className="w-16 h-16 rounded-2xl object-cover" />
+                  : viewStudent.user?.name?.[0]?.toUpperCase()}
+              </div>
+              <div>
+                <h3 className="text-base font-extrabold text-slate-800">{viewStudent.user?.name}</h3>
+                <p className="text-xs font-bold text-emerald-600">Roll #{viewStudent.rollNumber}</p>
+                <p className="text-xs font-bold text-slate-400 mt-0.5">Class {viewStudent.class?.name} - {viewStudent.class?.section}</p>
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              {[
+                { label: 'Date of Birth', value: new Date(viewStudent.dateOfBirth).toLocaleDateString() },
+                { label: 'Blood Group', value: viewStudent.bloodGroup || '—' },
+                { label: 'Gender', value: viewStudent.gender || '—' },
+                { label: 'Parent', value: viewStudent.parentName },
+                { label: 'Phone', value: viewStudent.phone },
+                { label: 'Address', value: viewStudent.address || '—' },
+              ].map(({ label, value }) => (
+                <div key={label} className="bg-slate-50 rounded-xl p-3">
+                  <p className="text-xs font-extrabold text-slate-400 uppercase tracking-wider mb-1">{label}</p>
+                  <p className="text-sm font-bold text-slate-700 capitalize">{value}</p>
+                </div>
+              ))}
+            </div>
           </div>
         )}
       </Modal>

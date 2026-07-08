@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import toast from 'react-hot-toast';
 import Spinner from '../components/Spinner';
+import { Mail, Lock, Shield } from 'lucide-react';
 
 const Login = () => {
   const [formData, setFormData] = useState({ email: '', password: '' });
@@ -12,94 +13,92 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!formData.email.trim() || !formData.password.trim()) {
+      toast.error('Email and password are required');
+      return;
+    }
     setLoading(true);
     try {
       await login(formData.email, formData.password);
-      toast.success('Login successful!');
+      toast.success('Welcome back!');
       navigate('/dashboard');
     } catch (error) {
-      toast.error(error.response?.data?.message || 'Login failed');
+      toast.error(error.response?.data?.message || 'Login credentials incorrect');
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div
-      className="min-h-screen flex items-center justify-center p-4"
-      style={{
-        backgroundImage: "url('/login-bg.png')",
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        backgroundRepeat: 'no-repeat',
-      }}
-    >
-      {/* Dark overlay for readability */}
-      <div className="absolute inset-0 bg-black/30" />
-
-      {/* Card */}
-      <div className="relative z-10 bg-white rounded-2xl shadow-2xl w-full max-w-md p-8">
-
-        {/* Logo + School Name */}
-        <div className="flex flex-col items-center pb-5 mb-5 border-b border-gray-200">
-          <img
-            src="/logo-1.png"
-            alt="School Logo"
-            className="h-20 w-auto object-contain mb-2"
-          />
-          <p className="text-base font-semibold text-gray-700 text-center leading-tight">
-            Quit Green Valley
-          </p>
-          <p className="text-xs text-gray-400 uppercase tracking-wide leading-tight">
-            Convent School
+    <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-emerald-950 via-slate-900 to-emerald-900 select-none">
+      <div className="w-full max-w-md bg-white border border-slate-100 rounded-3xl shadow-2xl p-8 lg:p-10">
+        <div className="flex flex-col items-center pb-6 mb-6 border-b border-slate-100">
+          <div className="mb-3 bg-white rounded-full p-2.5 shadow-sm border border-slate-100">
+            <img
+              src="/logo-1.png"
+              alt="School Logo"
+              className="h-16 w-16 object-contain"
+              onError={(e) => {
+                e.target.src = "https://cdn-icons-png.flaticon.com/512/167/167707.png";
+              }}
+            />
+          </div>
+          <h2 className="text-2xl font-extrabold text-slate-800 tracking-tight text-center leading-none">
+            Green Valley
+          </h2>
+          <p className="text-sm font-bold text-emerald-600 uppercase tracking-widest leading-none mt-2">
+            Convent School Portal
           </p>
         </div>
 
-        {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-5">
           <div>
-            <label className="label">
-              Email
-            </label>
-            <input
-              type="email"
-              value={formData.email}
-              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-              className="w-full px-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition"
-              placeholder="admin@gmail.com"
-              required
-            />
+            <label className="label">Email Address</label>
+            <div className="relative">
+              <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+              <input
+                type="email"
+                value={formData.email}
+                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                className="input-field pl-11"
+                placeholder="name@school.com"
+                required
+              />
+            </div>
           </div>
 
           <div>
-            <label className="label">
-              Password
-            </label>
-            <input
-              type="password"
-              value={formData.password}
-              onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-              className="w-full px-4 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition"
-              placeholder="••••••••"
-              required
-            />
+            <label className="label">Secure Password</label>
+            <div className="relative">
+              <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+              <input
+                type="password"
+                value={formData.password}
+                onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                className="input-field pl-11"
+                placeholder="••••••••"
+                required
+                minLength={6}
+              />
+            </div>
           </div>
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full bg-green-700 hover:bg-green-800 text-white font-semibold py-3 rounded-lg transition-colors duration-200 flex items-center justify-center disabled:opacity-70 disabled:cursor-not-allowed"
-          >
-            {loading ? <Spinner size="sm" /> : 'Sign In'}
+          <button type="submit" disabled={loading} className="btn-primary w-full flex items-center justify-center gap-2">
+            {loading ? <Spinner size="sm" /> : (
+              <>
+                <Shield className="w-5 h-5" />
+                <span>Sign In Securely</span>
+              </>
+            )}
           </button>
 
-          <div className="text-center mt-3">
+          <div className="text-center pt-3 border-t border-slate-100">
             <button
               type="button"
               onClick={() => setFormData({ email: 'developer@school.com', password: 'developer123' })}
-              className="text-xs text-gray-400 hover:text-green-700 hover:underline transition"
+              className="text-xs font-bold text-slate-400 hover:text-emerald-600 tracking-wider uppercase"
             >
-              Developer Login Quick Access
+              Quick Developer Bypass
             </button>
           </div>
         </form>

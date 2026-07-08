@@ -146,54 +146,49 @@ const Teachers = () => {
   return (
     <DashboardLayout>
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
-        <div><h1 className="text-2xl font-bold">Teachers</h1><p className="text-gray-500 text-sm">Manage teacher records</p></div>
+        <div>
+          <h1 className="page-title">👨‍🏫 Teachers</h1>
+          <p className="page-subtitle">Manage teacher records &amp; assignments</p>
+        </div>
         <div className="flex gap-2 flex-wrap">
-          <button onClick={handleExportCSV} className="btn-secondary flex items-center gap-2">
-            <FileText size={18} /> Export CSV
+          <button onClick={handleExportCSV} className="btn-secondary flex items-center gap-1.5 text-xs">
+            <FileText size={15} /> Export CSV
           </button>
-          <button onClick={handleExportPDF} className="btn-secondary flex items-center gap-2">
-            <Download size={18} /> Export PDF
+          <button onClick={handleExportPDF} className="btn-secondary flex items-center gap-1.5 text-xs">
+            <Download size={15} /> Export PDF
           </button>
-          <button onClick={openCreate} className="btn-primary">+ Add Teacher</button>
+          <button onClick={openCreate} className="btn-primary text-xs">+ Add Teacher</button>
         </div>
       </div>
 
-      <div className="card mb-6">
+      <div className="bg-white rounded-2xl border border-slate-100 p-5 shadow-[0_8px_30px_rgb(0,0,0,0.008)] mb-6">
         <input placeholder="Search teachers..." value={search} onChange={(e) => { setSearch(e.target.value); setPage(1); }} className="input-field" />
       </div>
 
       {loading ? <div className="flex justify-center py-12"><Spinner size="lg" /></div> : (
-        <div className="card p-0 overflow-hidden">
+        <div className="bg-white rounded-2xl border border-slate-100 shadow-[0_8px_30px_rgb(0,0,0,0.008)] overflow-hidden">
           <div className="overflow-x-auto max-h-[520px] overflow-y-auto">
             <table className="w-full">
-              <thead className="bg-gray-50 border-b sticky top-0 z-10">
+              <thead className="bg-slate-50/60 border-b border-slate-100 sticky top-0 z-10">
                 <tr>{['Employee ID', 'Name', 'Email', 'Phone', 'Subjects', 'Actions'].map((h) => (
-                  <th key={h} className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase bg-gray-50">{h}</th>
+                  <th key={h} className="table-th">{h}</th>
                 ))}</tr>
               </thead>
-              <tbody className="divide-y">
+              <tbody className="divide-y divide-slate-50">
                 {teachers.map((t) => (
-                  <tr key={t._id} className="hover:bg-gray-50">
-                    <td className="px-4 py-3 text-sm font-mono">{t.employeeId}</td>
-                    <td className="px-4 py-3 text-sm font-medium">{t.user?.name}</td>
-                    <td className="px-4 py-3 text-sm">{t.user?.email}</td>
-                    <td className="px-4 py-3 text-sm">{t.phone}</td>
-                    <td className="px-4 py-3 text-sm">{t.subjects?.length || 0} subjects</td>
-                    <td className="px-4 py-3 text-sm">
-                      <div className="flex gap-3">
-                        <button 
-                          onClick={() => openEdit(t)} 
-                          className="p-2 hover:bg-yellow-100 rounded text-yellow-600 transition"
-                          title="Edit teacher"
-                        >
-                          <Edit size={18} />
+                  <tr key={t._id} className="hover:bg-emerald-50/15">
+                    <td className="px-5 py-3.5"><span className="text-xs font-bold text-slate-600 font-mono bg-slate-50 px-2 py-1 rounded-lg border border-slate-100">{t.employeeId}</span></td>
+                    <td className="px-5 py-3.5 text-sm font-bold text-slate-800">{t.user?.name}</td>
+                    <td className="px-5 py-3.5 text-xs font-semibold text-slate-600">{t.user?.email}</td>
+                    <td className="px-5 py-3.5 text-xs font-semibold text-slate-600">{t.phone}</td>
+                    <td className="px-5 py-3.5"><span className="text-xs font-bold text-emerald-700 bg-emerald-50 px-2 py-1 rounded-lg">{t.subjects?.length || 0} subjects</span></td>
+                    <td className="px-5 py-3.5">
+                      <div className="flex items-center gap-1.5">
+                        <button onClick={() => openEdit(t)} className="w-7 h-7 flex items-center justify-center rounded-lg bg-amber-50 text-amber-600 hover:bg-amber-100 transition-colors" title="Edit teacher">
+                          <Edit size={14} />
                         </button>
-                        <button 
-                          onClick={() => handleDelete(t._id)} 
-                          className="p-2 hover:bg-red-100 rounded text-red-600 transition"
-                          title="Delete teacher"
-                        >
-                          <Trash2 size={18} />
+                        <button onClick={() => handleDelete(t._id)} className="w-7 h-7 flex items-center justify-center rounded-lg bg-rose-50 text-rose-600 hover:bg-rose-100 transition-colors" title="Delete teacher">
+                          <Trash2 size={14} />
                         </button>
                       </div>
                     </td>
@@ -202,7 +197,7 @@ const Teachers = () => {
               </tbody>
             </table>
           </div>
-          <div className="px-4 pb-4"><Pagination page={page} pages={pages} onPageChange={setPage} /></div>
+          <div className="px-5 pb-4 pt-3 border-t border-slate-50"><Pagination page={page} pages={pages} onPageChange={setPage} /></div>
         </div>
       )}
 
@@ -222,7 +217,7 @@ const Teachers = () => {
             <div className="flex flex-wrap gap-2 mt-1">
               {subjects.map((s) => (
                 <button key={s._id} type="button" onClick={() => toggleSubject(s._id)}
-                  className={`px-3 py-1 rounded-full text-xs font-medium border ${form.subjects.includes(s._id) ? 'bg-green-100 border-green-300 text-green-700' : 'bg-gray-50 border-gray-200 text-gray-600'}`}>
+                  className={`px-3 py-1 rounded-xl text-xs font-bold border ${form.subjects.includes(s._id) ? 'bg-emerald-50 border-emerald-200 text-emerald-700' : 'bg-slate-50 border-slate-200 text-slate-500 hover:border-slate-300'}`}>
                   {s.name} ({s.code})
                 </button>
               ))}

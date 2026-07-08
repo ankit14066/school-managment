@@ -1,20 +1,28 @@
-const StatCard = ({ title, value, icon, color = 'primary' }) => {
+const StatCard = ({ title, value, icon, color = 'green', badge }) => {
   const colors = {
-    primary: 'bg-primary-50/70 text-primary-600 border-primary-100/50 shadow-primary-500/10',
-    green: 'bg-emerald-50/70 text-emerald-600 border-emerald-100/50 shadow-emerald-500/10',
-    blue: 'bg-blue-50/70 text-blue-600 border-blue-100/50 shadow-blue-500/10',
-    purple: 'bg-indigo-50/70 text-indigo-600 border-indigo-100/50 shadow-indigo-500/10',
-    orange: 'bg-amber-50/70 text-amber-600 border-amber-100/50 shadow-amber-500/10',
+    green: 'bg-emerald-50 text-emerald-600 border-emerald-100',
+    blue: 'bg-blue-50 text-blue-600 border-blue-100',
+    purple: 'bg-purple-50 text-purple-600 border-purple-100',
+    orange: 'bg-orange-50 text-orange-600 border-orange-100',
+    pink: 'bg-pink-50 text-pink-600 border-pink-100',
+    yellow: 'bg-amber-50 text-amber-600 border-amber-100',
   };
 
   return (
-    <div className="bg-white rounded-2xl border border-slate-100/80 p-5 shadow-[0_8px_30px_rgb(0,0,0,0.015)] hover:shadow-[0_12px_32px_rgb(0,0,0,0.035)] hover:-translate-y-0.5 transition-all duration-300 flex items-center gap-4">
-      <div className={`p-3.5 rounded-xl border flex items-center justify-center shrink-0 shadow-sm ${colors[color] || colors.primary}`}>
+    <div className="bg-white rounded-2xl border border-slate-100 p-5 shadow-[0_8px_30px_rgb(0,0,0,0.01)] flex items-center gap-4">
+      <div className={`w-14 h-14 rounded-2xl border flex items-center justify-center shrink-0 ${colors[color] || colors.green}`}>
         {icon}
       </div>
-      <div className="min-w-0">
-        <p className="text-xs font-bold text-slate-400 uppercase tracking-wider truncate">{title}</p>
-        <p className="text-2xl font-extrabold text-slate-800 mt-0.5 tracking-tight truncate">{value}</p>
+      <div className="min-w-0 flex-1">
+        <p className="text-sm font-bold text-slate-400 uppercase tracking-wide truncate leading-none mb-1.5">{title}</p>
+        <p className="text-3xl font-extrabold text-slate-800 tracking-tight leading-tight truncate">{value}</p>
+        {badge && (
+          <div className="mt-2">
+            <span className="text-xs font-bold text-emerald-600 bg-emerald-50 px-2 py-1 rounded-md">
+              {badge}
+            </span>
+          </div>
+        )}
       </div>
     </div>
   );

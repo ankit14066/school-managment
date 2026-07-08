@@ -81,15 +81,16 @@ const Attendance = () => {
   return (
     <DashboardLayout>
       <div className="mb-8">
-        <h1 className="text-2xl font-bold">Attendance</h1>
-        <div className="flex gap-2 mt-4">
+        <h1 className="page-title">📋 Attendance</h1>
+        <p className="page-subtitle">Mark, view &amp; report student attendance</p>
+        <div className="flex gap-2 mt-4 flex-wrap">
           {['mark', 'history', 'report'].map((m) => (
-            <button key={m} onClick={() => setViewMode(m)} className={`px-4 py-2 rounded-lg text-sm font-medium capitalize ${viewMode === m ? 'bg-green-600 text-white' : 'bg-gray-100 text-gray-600'}`}>{m === 'mark' ? 'Mark Attendance' : m === 'history' ? 'View History' : 'Monthly Report'}</button>
+            <button key={m} onClick={() => setViewMode(m)} className={`px-4 py-2 rounded-xl text-xs font-bold capitalize ${viewMode === m ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/20' : 'bg-white text-slate-500 border border-slate-200 hover:border-slate-300'}`}>{m === 'mark' ? 'Mark Attendance' : m === 'history' ? 'View History' : 'Monthly Report'}</button>
           ))}
         </div>
       </div>
 
-      <div className="card mb-6 flex flex-col sm:flex-row gap-4">
+      <div className="bg-white rounded-2xl border border-slate-100 p-5 shadow-[0_8px_30px_rgb(0,0,0,0.008)] mb-6 flex flex-col sm:flex-row gap-4">
         <GreenSelect value={selectedClass} onChange={(e) => setSelectedClass(e.target.value)} className="sm:w-48">
           <option value="">Select Class</option>
           {classes.map((c) => <option key={c._id} value={c._id}>Class {c.name}-{c.section}</option>)}
@@ -110,19 +111,19 @@ const Attendance = () => {
       {loading ? <div className="flex justify-center py-12"><Spinner size="lg" /></div> : (
         <>
           {viewMode === 'mark' && selectedClass && (
-            <div className="card p-0 overflow-hidden">
+            <div className="bg-white rounded-2xl border border-slate-100 shadow-[0_8px_30px_rgb(0,0,0,0.008)] overflow-hidden">
               <table className="w-full">
-                <thead className="bg-gray-50 border-b"><tr>{['Roll No','Name','Status'].map((h) => <th key={h} className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase">{h}</th>)}</tr></thead>
-                <tbody className="divide-y">
+                <thead className="bg-slate-50/60 border-b border-slate-100"><tr>{['Roll No','Name','Status'].map((h) => <th key={h} className="text-left px-5 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider">{h}</th>)}</tr></thead>
+                <tbody className="divide-y divide-slate-50">
                   {records.map((r, i) => (
-                    <tr key={r.student}>
-                      <td className="px-4 py-3 text-sm font-mono">{r.rollNumber}</td>
-                      <td className="px-4 py-3 text-sm">{r.name}</td>
-                      <td className="px-4 py-3">
+                    <tr key={r.student} className="hover:bg-emerald-50/15">
+                      <td className="px-5 py-3.5"><span className="text-xs font-bold text-slate-600 font-mono bg-slate-50 px-2 py-1 rounded-lg">{r.rollNumber}</span></td>
+                      <td className="px-5 py-3.5 text-sm font-bold text-slate-800">{r.name}</td>
+                      <td className="px-5 py-3.5">
                         <div className="flex gap-2">
                           {STATUS_OPTIONS.map((s) => (
                             <button key={s} type="button" onClick={() => { const u = [...records]; u[i] = { ...u[i], status: s }; setRecords(u); }}
-                              className={`px-3 py-1 rounded-full text-xs font-medium capitalize ${r.status === s ? (s === 'present' ? 'bg-green-100 text-green-700' : s === 'absent' ? 'bg-red-100 text-red-700' : 'bg-yellow-100 text-yellow-700') : 'bg-gray-100 text-gray-500'}`}>{s}</button>
+                              className={`px-3 py-1 rounded-xl text-xs font-bold capitalize ${r.status === s ? (s === 'present' ? 'bg-emerald-100 text-emerald-700 border border-emerald-200' : s === 'absent' ? 'bg-rose-100 text-rose-700 border border-rose-200' : 'bg-amber-100 text-amber-700 border border-amber-200') : 'bg-slate-50 text-slate-400 border border-slate-200'}`}>{s}</button>
                           ))}
                         </div>
                       </td>
@@ -131,22 +132,22 @@ const Attendance = () => {
                 </tbody>
               </table>
               {records.length > 0 && (
-                <div className="p-4 border-t"><button onClick={handleSave} disabled={saving} className="btn-primary">{saving ? 'Saving...' : 'Save Attendance'}</button></div>
+                <div className="p-5 border-t border-slate-50"><button onClick={handleSave} disabled={saving} className="btn-primary text-xs">{saving ? 'Saving...' : 'Save Attendance'}</button></div>
               )}
             </div>
           )}
 
           {viewMode === 'history' && (
-            <div className="card p-0 overflow-hidden">
+            <div className="bg-white rounded-2xl border border-slate-100 shadow-[0_8px_30px_rgb(0,0,0,0.008)] overflow-hidden">
               <table className="w-full">
-                <thead className="bg-gray-50 border-b"><tr>{['Student','Date','Status','Marked By'].map((h) => <th key={h} className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase">{h}</th>)}</tr></thead>
-                <tbody className="divide-y">
+                <thead className="bg-slate-50/60 border-b border-slate-100"><tr>{['Student','Date','Status','Marked By'].map((h) => <th key={h} className="text-left px-5 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider">{h}</th>)}</tr></thead>
+                <tbody className="divide-y divide-slate-50">
                   {history.map((h) => (
-                    <tr key={h._id}>
-                      <td className="px-4 py-3 text-sm">{h.student?.user?.name}</td>
-                      <td className="px-4 py-3 text-sm">{new Date(h.date).toLocaleDateString()}</td>
-                      <td className="px-4 py-3"><Badge variant={h.status === 'present' ? 'active' : h.status === 'absent' ? 'inactive' : 'teacher'}>{h.status}</Badge></td>
-                      <td className="px-4 py-3 text-sm">{h.markedBy?.name}</td>
+                    <tr key={h._id} className="hover:bg-emerald-50/15">
+                      <td className="px-5 py-3.5 text-sm font-bold text-slate-800">{h.student?.user?.name}</td>
+                      <td className="px-5 py-3.5 text-xs font-semibold text-slate-600">{new Date(h.date).toLocaleDateString()}</td>
+                      <td className="px-5 py-3.5"><Badge variant={h.status === 'present' ? 'active' : h.status === 'absent' ? 'inactive' : 'teacher'}>{h.status}</Badge></td>
+                      <td className="px-5 py-3.5 text-xs font-semibold text-slate-600">{h.markedBy?.name}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -155,11 +156,14 @@ const Attendance = () => {
           )}
 
           {viewMode === 'report' && report && (
-            <div className="card">
-              <h2 className="text-lg font-semibold mb-4">{report.month} Report</h2>
+            <div className="bg-white rounded-2xl border border-slate-100 p-6 shadow-[0_8px_30px_rgb(0,0,0,0.008)]">
+              <h2 className="text-base font-extrabold text-slate-800 tracking-tight mb-4">{report.month} Report</h2>
               <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
                 {[{ l: 'Total Days', v: report.total }, { l: 'Present', v: report.present }, { l: 'Absent', v: report.absent }, { l: 'Late', v: report.late }, { l: 'Percentage', v: `${report.percentage}%` }].map((s) => (
-                  <div key={s.l} className="text-center p-3 bg-gray-50 rounded-lg"><p className="text-xs text-gray-500">{s.l}</p><p className="text-xl font-bold">{s.v}</p></div>
+                  <div key={s.l} className="text-center p-4 bg-slate-50/50 rounded-2xl border border-slate-100">
+                    <p className="text-xs font-extrabold text-slate-400 uppercase tracking-wider">{s.l}</p>
+                    <p className="text-xl font-extrabold text-slate-800 mt-1">{s.v}</p>
+                  </div>
                 ))}
               </div>
             </div>

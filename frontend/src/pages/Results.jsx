@@ -96,33 +96,41 @@ const Results = () => {
 
   return (
     <DashboardLayout>
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="text-2xl font-bold">{isStudent ? 'My Results' : 'Results & Exams'}</h1>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+        <div>
+          <h1 className="page-title">{isStudent ? '📊 My Results' : '📊 Results & Exams'}</h1>
+          <p className="page-subtitle">{isStudent ? 'Your academic performance' : 'Manage exams, marks &amp; report cards'}</p>
+        </div>
         {(isAdmin || isTeacher) && (
-          <div className="flex gap-2">
-            <button onClick={() => setShowExamModal(true)} className="btn-secondary">+ Create Exam</button>
-          </div>
+          <button onClick={() => setShowExamModal(true)} className="btn-primary text-xs">+ Create Exam</button>
         )}
       </div>
 
       {isStudent && studentSummary && (
         <>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-            <div className="card text-center"><p className="text-xs text-gray-500">Total Marks</p><p className="text-2xl font-bold">{studentSummary.totalMarks}/{studentSummary.maxMarks}</p></div>
-            <div className="card text-center"><p className="text-xs text-gray-500">Percentage</p><p className="text-2xl font-bold">{studentSummary.overallPercentage}%</p></div>
-            <div className="card text-center"><p className="text-xs text-gray-500">Subjects</p><p className="text-2xl font-bold">{studentSummary.subjectCount}</p></div>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-5 mb-8">
+            {[
+              { l: 'Total Marks', v: `${studentSummary.totalMarks}/${studentSummary.maxMarks}` },
+              { l: 'Percentage', v: `${studentSummary.overallPercentage}%` },
+              { l: 'Subjects', v: studentSummary.subjectCount },
+            ].map((s) => (
+              <div key={s.l} className="bg-white border border-slate-100 rounded-2xl p-5 shadow-[0_8px_30px_rgb(0,0,0,0.008)]">
+                <p className="text-xs font-extrabold text-slate-400 uppercase tracking-wider mb-1">{s.l}</p>
+                <p className="text-2xl font-extrabold text-slate-800">{s.v}</p>
+              </div>
+            ))}
           </div>
-          <div className="card p-0 overflow-hidden">
+          <div className="bg-white rounded-2xl border border-slate-100 shadow-[0_8px_30px_rgb(0,0,0,0.008)] overflow-hidden">
             <table className="w-full">
-              <thead className="bg-gray-50 border-b"><tr>{['Exam','Subject','Marks','Percentage','Grade'].map((h) => <th key={h} className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase">{h}</th>)}</tr></thead>
-              <tbody className="divide-y">
+              <thead className="bg-slate-50/60 border-b border-slate-100"><tr>{['Exam','Subject','Marks','Percentage','Grade'].map((h) => <th key={h} className="text-left px-5 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider">{h}</th>)}</tr></thead>
+              <tbody className="divide-y divide-slate-50">
                 {studentSummary.results?.map((r) => (
-                  <tr key={r._id}>
-                    <td className="px-4 py-3 text-sm">{r.exam?.name}</td>
-                    <td className="px-4 py-3 text-sm">{r.exam?.subject?.name}</td>
-                    <td className="px-4 py-3 text-sm">{r.marksObtained}/{r.exam?.maxMarks}</td>
-                    <td className="px-4 py-3 text-sm">{r.percentage}%</td>
-                    <td className="px-4 py-3"><Badge variant={gradeColor[r.grade]}>{r.grade}</Badge></td>
+                  <tr key={r._id} className="hover:bg-emerald-50/15">
+                    <td className="px-5 py-3.5 text-sm font-bold text-slate-800">{r.exam?.name}</td>
+                    <td className="px-5 py-3.5 text-xs font-semibold text-slate-600">{r.exam?.subject?.name}</td>
+                    <td className="px-5 py-3.5 text-xs font-bold text-slate-700">{r.marksObtained}/{r.exam?.maxMarks}</td>
+                    <td className="px-5 py-3.5 text-xs font-bold text-emerald-600">{r.percentage}%</td>
+                    <td className="px-5 py-3.5"><Badge variant={gradeColor[r.grade]}>{r.grade}</Badge></td>
                   </tr>
                 ))}
               </tbody>
@@ -133,30 +141,30 @@ const Results = () => {
 
       {!isStudent && (
         <>
-          <h2 className="text-lg font-semibold mb-4">Exams</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
+          <h2 className="text-base font-extrabold text-slate-800 tracking-tight mb-4">Exams</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mb-8">
             {exams.map((exam) => (
-              <div key={exam._id} className="card">
-                <h3 className="font-semibold">{exam.name}</h3>
-                <p className="text-sm text-gray-500">{exam.subject?.name} — Class {exam.class?.name}-{exam.class?.section}</p>
-                <p className="text-sm text-gray-500">Max Marks: {exam.maxMarks} | {new Date(exam.date).toLocaleDateString()}</p>
-                <button onClick={() => openMarksEntry(exam)} className="btn-primary text-sm mt-3 w-full">Enter Marks</button>
+              <div key={exam._id} className="bg-white rounded-2xl border border-slate-100 p-6 shadow-[0_8px_30px_rgb(0,0,0,0.008)] hover:border-slate-200/50">
+                <h3 className="text-sm font-extrabold text-slate-800">{exam.name}</h3>
+                <p className="text-xs font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-lg inline-block mt-1">{exam.subject?.name} — Class {exam.class?.name}-{exam.class?.section}</p>
+                <p className="text-xs font-semibold text-slate-500 mt-2">Max Marks: {exam.maxMarks} · {new Date(exam.date).toLocaleDateString()}</p>
+                <button onClick={() => openMarksEntry(exam)} className="btn-primary text-xs mt-4 w-full">Enter Marks</button>
               </div>
             ))}
           </div>
 
-          <h2 className="text-lg font-semibold mb-4">Recent Results</h2>
-          <div className="card p-0 overflow-hidden">
+          <h2 className="text-base font-extrabold text-slate-800 tracking-tight mb-4">Recent Results</h2>
+          <div className="bg-white rounded-2xl border border-slate-100 shadow-[0_8px_30px_rgb(0,0,0,0.008)] overflow-hidden">
             <table className="w-full">
-              <thead className="bg-gray-50 border-b"><tr>{['Student','Exam','Subject','Marks','Grade'].map((h) => <th key={h} className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase">{h}</th>)}</tr></thead>
-              <tbody className="divide-y">
+              <thead className="bg-slate-50/60 border-b border-slate-100"><tr>{['Student','Exam','Subject','Marks','Grade'].map((h) => <th key={h} className="text-left px-5 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider">{h}</th>)}</tr></thead>
+              <tbody className="divide-y divide-slate-50">
                 {results.map((r) => (
-                  <tr key={r._id}>
-                    <td className="px-4 py-3 text-sm">{r.student?.user?.name}</td>
-                    <td className="px-4 py-3 text-sm">{r.exam?.name}</td>
-                    <td className="px-4 py-3 text-sm">{r.exam?.subject?.name}</td>
-                    <td className="px-4 py-3 text-sm">{r.marksObtained}/{r.exam?.maxMarks}</td>
-                    <td className="px-4 py-3"><Badge variant={gradeColor[r.grade]}>{r.grade}</Badge></td>
+                  <tr key={r._id} className="hover:bg-emerald-50/15">
+                    <td className="px-5 py-3.5 text-sm font-bold text-slate-800">{r.student?.user?.name}</td>
+                    <td className="px-5 py-3.5 text-xs font-semibold text-slate-600">{r.exam?.name}</td>
+                    <td className="px-5 py-3.5 text-xs font-semibold text-slate-600">{r.exam?.subject?.name}</td>
+                    <td className="px-5 py-3.5 text-xs font-bold text-slate-700">{r.marksObtained}/{r.exam?.maxMarks}</td>
+                    <td className="px-5 py-3.5"><Badge variant={gradeColor[r.grade]}>{r.grade}</Badge></td>
                   </tr>
                 ))}
               </tbody>
@@ -181,12 +189,12 @@ const Results = () => {
       <Modal isOpen={showMarksModal} onClose={() => setShowMarksModal(false)} title={`Enter Marks — ${selectedExam?.name}`} size="lg">
         <div className="max-h-96 overflow-y-auto">
           <table className="w-full">
-            <thead className="bg-gray-50 sticky top-0"><tr><th className="text-left px-3 py-2 text-xs">Roll No</th><th className="text-left px-3 py-2 text-xs">Name</th><th className="text-left px-3 py-2 text-xs">Marks (/{selectedExam?.maxMarks})</th></tr></thead>
-            <tbody className="divide-y">
+            <thead className="bg-slate-50/60 sticky top-0"><tr><th className="text-left px-5 py-3 text-xs font-bold text-slate-400 uppercase">Roll No</th><th className="text-left px-5 py-3 text-xs font-bold text-slate-400 uppercase">Name</th><th className="text-left px-5 py-3 text-xs font-bold text-slate-400 uppercase">Marks (/{selectedExam?.maxMarks})</th></tr></thead>
+            <tbody className="divide-y divide-slate-50">
               {markRecords.map((r, i) => (
-                <tr key={r.student}>
-                  <td className="px-3 py-2 text-sm font-mono">{r.rollNumber}</td>
-                  <td className="px-3 py-2 text-sm">{r.name}</td>
+                <tr key={r.student} className="hover:bg-emerald-50/15">
+                  <td className="px-5 py-2.5 text-xs font-bold font-mono text-slate-600">{r.rollNumber}</td>
+                  <td className="px-5 py-2.5 text-sm font-bold text-slate-800">{r.name}</td>
                   <td className="px-3 py-2"><input type="number" className="input-field w-24" min={0} max={selectedExam?.maxMarks} value={r.marksObtained} onChange={(e) => { const u = [...markRecords]; u[i] = { ...u[i], marksObtained: e.target.value }; setMarkRecords(u); }} /></td>
                 </tr>
               ))}

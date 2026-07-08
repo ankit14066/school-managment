@@ -6,6 +6,7 @@ import Modal from '../components/Modal';
 import Badge from '../components/Badge';
 import Spinner from '../components/Spinner';
 import toast from 'react-hot-toast';
+import { Mail } from 'lucide-react';
 
 const Messages = () => {
   const { isAdmin, isTeacher } = useAuth();
@@ -59,34 +60,42 @@ const Messages = () => {
 
   return (
     <DashboardLayout>
-      <div className="flex justify-between items-center mb-8">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
         <div>
-          <h1 className="text-2xl font-bold">Messages</h1>
-          {unreadCount > 0 && <Badge variant="inactive">{unreadCount} unread</Badge>}
+          <div className="flex items-center gap-2">
+            <h1 className="page-title">✉️ Messages</h1>
+            {unreadCount > 0 && <Badge variant="inactive">{unreadCount} unread</Badge>}
+          </div>
+          <p className="page-subtitle">Inbox, sent &amp; broadcasts</p>
         </div>
         <div className="flex gap-2">
-          {isAdmin && <button onClick={() => setShowBroadcast(true)} className="btn-secondary text-sm">Broadcast</button>}
-          <button onClick={() => setShowCompose(true)} className="btn-primary text-sm">Compose</button>
+          {isAdmin && <button onClick={() => setShowBroadcast(true)} className="btn-secondary text-xs">Broadcast</button>}
+          <button onClick={() => setShowCompose(true)} className="btn-primary text-xs">Compose</button>
         </div>
       </div>
 
-      <div className="flex gap-2 mb-4">
+      <div className="flex gap-2 mb-6">
         {['inbox', 'sent'].map((f) => (
-          <button key={f} onClick={() => setFolder(f)} className={`px-4 py-2 rounded-lg text-sm capitalize ${folder === f ? 'bg-primary-600 text-white' : 'bg-gray-100'}`}>{f}</button>
+          <button key={f} onClick={() => setFolder(f)} className={`px-4 py-2 rounded-xl text-xs font-bold capitalize ${folder === f ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/20' : 'bg-white text-slate-500 border border-slate-200 hover:border-slate-300'}`}>{f}</button>
         ))}
       </div>
 
       {loading ? <div className="flex justify-center py-12"><Spinner size="lg" /></div> : (
         <div className="space-y-3">
-          {messages.map((m) => (
-            <div key={m._id} className={`card py-3 ${!m.isRead && folder === 'inbox' ? 'border-l-4 border-l-primary-500' : ''}`}
+          {messages.length === 0 ? (
+            <div className="bg-white rounded-2xl border border-slate-100 p-12 text-center shadow-[0_8px_30px_rgb(0,0,0,0.008)]">
+              <Mail className="w-10 h-10 text-slate-300 mx-auto mb-3" />
+              <p className="text-xs font-bold text-slate-400">No messages in {folder}</p>
+            </div>
+          ) : messages.map((m) => (
+            <div key={m._id} className={`bg-white rounded-2xl border border-slate-100 p-5 shadow-[0_8px_30px_rgb(0,0,0,0.008)] hover:border-slate-200/50 cursor-pointer ${!m.isRead && folder === 'inbox' ? 'border-l-4 border-l-emerald-500' : ''}`}
               onClick={() => !m.isRead && folder === 'inbox' && markRead(m._id)}>
-              <div className="flex justify-between">
-                <p className="font-medium text-sm">{m.subject}</p>
-                <span className="text-xs text-gray-400">{new Date(m.createdAt).toLocaleDateString()}</span>
+              <div className="flex justify-between items-start">
+                <p className="text-sm font-extrabold text-slate-800">{m.subject}</p>
+                <span className="text-xs font-bold text-slate-400">{new Date(m.createdAt).toLocaleDateString()}</span>
               </div>
-              <p className="text-xs text-gray-500">{folder === 'inbox' ? `From: ${m.from?.name}` : `To: ${m.to?.name}`}</p>
-              <p className="text-sm text-gray-600 mt-1 line-clamp-2">{m.body}</p>
+              <p className="text-xs font-bold text-emerald-600 mt-1">{folder === 'inbox' ? `From: ${m.from?.name}` : `To: ${m.to?.name}`}</p>
+              <p className="text-xs font-semibold text-slate-600 mt-2 line-clamp-2">{m.body}</p>
             </div>
           ))}
         </div>

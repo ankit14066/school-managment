@@ -6,6 +6,7 @@ import Modal from '../components/Modal';
 import Badge from '../components/Badge';
 import Spinner from '../components/Spinner';
 import toast from 'react-hot-toast';
+import { Bell, Clock } from 'lucide-react';
 
 const Notices = () => {
   const { isAdmin } = useAuth();
@@ -43,26 +44,37 @@ const Notices = () => {
 
   return (
     <DashboardLayout>
-      <div className="flex justify-between items-center mb-8">
-        <div><h1 className="text-2xl font-bold">Notice Board</h1><p className="text-gray-500 text-sm">School announcements</p></div>
-        {isAdmin && <button onClick={() => setShowModal(true)} className="btn-primary">+ Post Notice</button>}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+        <div>
+          <h1 className="page-title">📢 Notice Board</h1>
+          <p className="page-subtitle">School announcements &amp; updates</p>
+        </div>
+        {isAdmin && <button onClick={() => setShowModal(true)} className="btn-primary text-xs">+ Post Notice</button>}
       </div>
 
       {loading ? <div className="flex justify-center py-12"><Spinner size="lg" /></div> : (
         <div className="space-y-4">
-          {notices.map((n) => (
-            <div key={n._id} className={`card ${!n.isRead ? 'border-l-4 border-l-primary-500' : ''}`}>
+          {notices.length === 0 ? (
+            <div className="bg-white rounded-2xl border border-slate-100 p-12 text-center shadow-[0_8px_30px_rgb(0,0,0,0.008)]">
+              <Bell className="w-10 h-10 text-slate-300 mx-auto mb-3" />
+              <p className="text-xs font-bold text-slate-400">No notices found</p>
+            </div>
+          ) : notices.map((n) => (
+            <div key={n._id} className={`bg-white rounded-2xl border border-slate-100 p-6 shadow-[0_8px_30px_rgb(0,0,0,0.008)] hover:border-slate-200/50 ${!n.isRead ? 'border-l-4 border-l-emerald-500' : ''}`}>
               <div className="flex justify-between items-start gap-4">
                 <div className="flex-1">
-                  <div className="flex items-center gap-2 mb-1">
-                    <h3 className="font-semibold">{n.title}</h3>
-                    {!n.isRead && <Badge variant="teacher">New</Badge>}
+                  <div className="flex items-center gap-2 mb-2 flex-wrap">
+                    <h3 className="text-sm font-extrabold text-slate-800">{n.title}</h3>
+                    {!n.isRead && <Badge variant="student">New</Badge>}
                     <Badge variant="admin">{n.targetAudience}</Badge>
                   </div>
-                  <p className="text-sm text-gray-600 whitespace-pre-wrap">{n.body}</p>
-                  <p className="text-xs text-gray-400 mt-2">By {n.postedBy?.name} · {new Date(n.createdAt).toLocaleDateString()}</p>
+                  <p className="text-xs font-semibold text-slate-600 whitespace-pre-wrap leading-relaxed">{n.body}</p>
+                  <p className="text-xs font-bold text-slate-400 mt-3 flex items-center gap-1.5">
+                    <Clock className="w-3.5 h-3.5" />
+                    By {n.postedBy?.name} · {new Date(n.createdAt).toLocaleDateString()}
+                  </p>
                 </div>
-                {!n.isRead && <button onClick={() => markRead(n._id)} className="text-xs text-primary-600 hover:underline shrink-0">Mark read</button>}
+                {!n.isRead && <button onClick={() => markRead(n._id)} className="text-xs font-bold text-emerald-600 hover:text-emerald-700 hover:underline shrink-0 uppercase tracking-wider">Mark read</button>}
               </div>
             </div>
           ))}

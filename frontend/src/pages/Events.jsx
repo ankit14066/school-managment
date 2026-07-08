@@ -6,6 +6,7 @@ import Modal from '../components/Modal';
 import Badge from '../components/Badge';
 import Spinner from '../components/Spinner';
 import toast from 'react-hot-toast';
+import { Calendar } from 'lucide-react';
 
 const typeColors = { holiday: 'inactive', exam: 'teacher', event: 'active' };
 
@@ -46,34 +47,44 @@ const Events = () => {
 
   return (
     <DashboardLayout>
-      <div className="flex justify-between items-center mb-8">
-        <div><h1 className="text-2xl font-bold">Events Calendar</h1></div>
-        {isAdmin && <button onClick={() => setShowModal(true)} className="btn-primary">+ Add Event</button>}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+        <div>
+          <h1 className="page-title">📅 Events Calendar</h1>
+          <p className="page-subtitle">School events, holidays &amp; exams</p>
+        </div>
+        {isAdmin && <button onClick={() => setShowModal(true)} className="btn-primary text-xs">+ Add Event</button>}
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="card lg:col-span-1">
-          <label className="label">Select Date</label>
+        <div className="bg-white rounded-2xl border border-slate-100 p-6 shadow-[0_8px_30px_rgb(0,0,0,0.008)] lg:col-span-1">
+          <div className="flex items-center gap-2 mb-4 pb-3 border-b border-slate-50">
+            <Calendar className="w-5 h-5 text-emerald-600" />
+            <label className="text-sm font-extrabold text-slate-800">Select Date</label>
+          </div>
           <input type="date" className="input-field" value={selectedDate} onChange={(e) => setSelectedDate(e.target.value)} />
-          <div className="mt-4 space-y-2">
-            {eventsOnDate.length === 0 ? <p className="text-sm text-gray-400">No events on this date</p> : eventsOnDate.map((ev) => (
-              <div key={ev._id} className="p-3 bg-gray-50 rounded-lg">
-                <div className="flex items-center gap-2"><Badge variant={typeColors[ev.type]}>{ev.type}</Badge><span className="font-medium text-sm">{ev.name}</span></div>
-                {ev.description && <p className="text-xs text-gray-500 mt-1">{ev.description}</p>}
+          <div className="mt-4 space-y-3">
+            {eventsOnDate.length === 0 ? (
+              <p className="text-xs font-bold text-slate-400 text-center py-6">No events on this date</p>
+            ) : eventsOnDate.map((ev) => (
+              <div key={ev._id} className="p-3 bg-slate-50/50 rounded-2xl border border-slate-100">
+                <div className="flex items-center gap-2"><Badge variant={typeColors[ev.type]}>{ev.type}</Badge><span className="font-bold text-xs text-slate-800">{ev.name}</span></div>
+                {ev.description && <p className="text-xs font-semibold text-slate-500 mt-1.5">{ev.description}</p>}
               </div>
             ))}
           </div>
         </div>
 
-        <div className="card lg:col-span-2">
-          <h2 className="font-semibold mb-4">Upcoming Events</h2>
+        <div className="bg-white rounded-2xl border border-slate-100 p-6 shadow-[0_8px_30px_rgb(0,0,0,0.008)] lg:col-span-2">
+          <h2 className="text-base font-extrabold text-slate-800 tracking-tight mb-4 pb-3 border-b border-slate-50">Upcoming Events</h2>
           {loading ? <Spinner /> : (
             <div className="space-y-3">
-              {upcoming.map((ev) => (
-                <div key={ev._id} className="flex items-center justify-between py-2 border-b border-gray-50 last:border-0">
+              {upcoming.length === 0 ? (
+                <p className="text-xs font-bold text-slate-400 text-center py-10">No upcoming events</p>
+              ) : upcoming.map((ev) => (
+                <div key={ev._id} className="flex items-center justify-between p-3 bg-slate-50/50 rounded-2xl border border-slate-100">
                   <div>
-                    <p className="font-medium">{ev.name}</p>
-                    <p className="text-xs text-gray-500">{new Date(ev.date).toLocaleDateString()}</p>
+                    <p className="text-xs font-bold text-slate-800">{ev.name}</p>
+                    <p className="text-xs font-bold text-slate-400 mt-1">{new Date(ev.date).toLocaleDateString()}</p>
                   </div>
                   <Badge variant={typeColors[ev.type]}>{ev.type}</Badge>
                 </div>

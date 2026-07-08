@@ -13,7 +13,7 @@ import {
 
 const BottomNav = () => {
   const { isAdmin, isTeacher, isStudent, isParent } = useAuth();
-  
+
   const iconClass = "w-5 h-5 mb-0.5";
 
   const adminItems = [
@@ -51,11 +51,14 @@ const BottomNav = () => {
   const items = isAdmin ? adminItems : isTeacher ? teacherItems : isParent ? parentItems : studentItems;
 
   return (
-    <nav className="lg:hidden fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-slate-100 z-40 safe-area-bottom shadow-[0_-4px_24px_rgba(0,0,0,0.04)]">
+    <nav className="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-slate-100 z-40 safe-area-bottom">
       <div className="flex justify-around py-2.5 px-2">
         {items.map((item) => (
-          <NavLink key={item.to} to={item.to}
-            className={({ isActive }) => `flex flex-col items-center justify-center flex-1 py-1 text-[10px] font-bold tracking-wide transition-all ${isActive ? 'text-primary-600 scale-105' : 'text-slate-400 hover:text-slate-600'}`}>
+          <NavLink
+            key={item.to}
+            to={item.to}
+            className={({ isActive }) => `flex flex-col items-center justify-center flex-1 py-1 text-xs font-bold ${isActive ? 'text-primary-600' : 'text-slate-400 hover:text-slate-600'}`}
+          >
             {item.icon}
             <span>{item.label}</span>
           </NavLink>

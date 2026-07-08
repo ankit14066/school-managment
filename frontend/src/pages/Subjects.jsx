@@ -116,49 +116,41 @@ const Subjects = () => {
     <DashboardLayout>
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
         <div>
-          <h1 className="text-2xl font-bold">Subjects</h1>
-          <p className="text-gray-500 text-sm">Manage subject records</p>
+          <h1 className="page-title">📖 Subjects</h1>
+          <p className="page-subtitle">Manage subject records &amp; assignments</p>
         </div>
         <div className="flex gap-2 flex-wrap">
-          <button onClick={handleExportCSV} className="btn-secondary flex items-center gap-2">
-            <FileText size={18} /> Export CSV
+          <button onClick={handleExportCSV} className="btn-secondary flex items-center gap-1.5 text-xs">
+            <FileText size={15} /> Export CSV
           </button>
-          <button onClick={handleExportPDF} className="btn-secondary flex items-center gap-2">
-            <Download size={18} /> Export PDF
+          <button onClick={handleExportPDF} className="btn-secondary flex items-center gap-1.5 text-xs">
+            <Download size={15} /> Export PDF
           </button>
-          <button onClick={() => { setEditing(null); setForm({ name: '', code: '', class: '', teacher: '', description: '' }); setShowModal(true); }} className="btn-primary">+ Add Subject</button>
+          <button onClick={() => { setEditing(null); setForm({ name: '', code: '', class: '', teacher: '', description: '' }); setShowModal(true); }} className="btn-primary text-xs">+ Add Subject</button>
         </div>
       </div>
 
       {loading ? <div className="flex justify-center py-12"><Spinner size="lg" /></div> : (
-        <div className="card p-0 overflow-hidden">
+        <div className="bg-white rounded-2xl border border-slate-100 shadow-[0_8px_30px_rgb(0,0,0,0.008)] overflow-hidden">
           <div className="overflow-x-auto max-h-[520px] overflow-y-auto">
             <table className="w-full">
-              <thead className="bg-gray-50 border-b sticky top-0 z-10">
-                <tr>{['Code','Name','Class','Teacher','Actions'].map((h) => <th key={h} className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase bg-gray-50">{h}</th>)}</tr>
+              <thead className="bg-slate-50/60 border-b border-slate-100 sticky top-0 z-10">
+                <tr>{['Code','Name','Class','Teacher','Actions'].map((h) => <th key={h} className="table-th">{h}</th>)}</tr>
               </thead>
-              <tbody className="divide-y">
+              <tbody className="divide-y divide-slate-50">
                 {subjects.map((s) => (
-                  <tr key={s._id} className="hover:bg-gray-50">
-                    <td className="px-4 py-3 text-sm font-mono text-green-600">{s.code}</td>
-                    <td className="px-4 py-3 text-sm font-medium">{s.name}</td>
-                    <td className="px-4 py-3 text-sm">{s.class ? `${s.class.name}-${s.class.section}` : '—'}</td>
-                    <td className="px-4 py-3 text-sm">{s.teacher?.user?.name || '—'}</td>
-                    <td className="px-4 py-3 text-sm">
-                      <div className="flex gap-3">
-                        <button 
-                          onClick={() => { setEditing(s); setForm({ name: s.name, code: s.code, class: s.class?._id || '', teacher: s.teacher?._id || '', description: s.description || '' }); setShowModal(true); }} 
-                          className="p-2 hover:bg-yellow-100 rounded text-yellow-600 transition"
-                          title="Edit subject"
-                        >
-                          <Edit size={18} />
+                  <tr key={s._id} className="hover:bg-emerald-50/15">
+                    <td className="px-5 py-3.5"><span className="text-xs font-extrabold text-emerald-700 bg-emerald-50 px-2 py-1 rounded-lg font-mono">{s.code}</span></td>
+                    <td className="px-5 py-3.5 text-sm font-bold text-slate-800">{s.name}</td>
+                    <td className="px-5 py-3.5"><span className="text-xs font-bold text-slate-500 bg-slate-50 px-2 py-1 rounded-lg">{s.class ? `${s.class.name}-${s.class.section}` : '—'}</span></td>
+                    <td className="px-5 py-3.5 text-xs font-semibold text-slate-600">{s.teacher?.user?.name || '—'}</td>
+                    <td className="px-5 py-3.5">
+                      <div className="flex items-center gap-1.5">
+                        <button onClick={() => { setEditing(s); setForm({ name: s.name, code: s.code, class: s.class?._id || '', teacher: s.teacher?._id || '', description: s.description || '' }); setShowModal(true); }} className="w-7 h-7 flex items-center justify-center rounded-lg bg-amber-50 text-amber-600 hover:bg-amber-100 transition-colors" title="Edit subject">
+                          <Edit size={14} />
                         </button>
-                        <button 
-                          onClick={() => handleDelete(s._id)} 
-                          className="p-2 hover:bg-red-100 rounded text-red-600 transition"
-                          title="Delete subject"
-                        >
-                          <Trash2 size={18} />
+                        <button onClick={() => handleDelete(s._id)} className="w-7 h-7 flex items-center justify-center rounded-lg bg-rose-50 text-rose-600 hover:bg-rose-100 transition-colors" title="Delete subject">
+                          <Trash2 size={14} />
                         </button>
                       </div>
                     </td>
@@ -167,7 +159,7 @@ const Subjects = () => {
               </tbody>
             </table>
           </div>
-          <div className="px-4 pb-4"><Pagination page={page} pages={pages} onPageChange={setPage} /></div>
+          <div className="px-5 pb-4 pt-3 border-t border-slate-50"><Pagination page={page} pages={pages} onPageChange={setPage} /></div>
         </div>
       )}
 

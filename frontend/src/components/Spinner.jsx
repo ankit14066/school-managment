@@ -7,7 +7,7 @@ const Spinner = ({ size = 'md' }) => {
 
   return (
     <div
-      className={`${sizes[size]} animate-spin rounded-full border-primary-100 border-t-primary-600`}
+      className={`${sizes[size]} animate-spin rounded-full border-emerald-100 border-t-emerald-600`}
     />
   );
 };

@@ -3,8 +3,10 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { ticketAPI } from '../services/authService';
 import { useAuth } from '../context/AuthContext';
 import DashboardLayout from '../components/layout/DashboardLayout';
+import GreenSelect from '../components/GreenSelect';
 import Spinner from '../components/Spinner';
 import toast from 'react-hot-toast';
+import { ArrowLeft, ExternalLink } from 'lucide-react';
 
 const TicketDetail = () => {
   const { id } = useParams();
@@ -72,22 +74,22 @@ const TicketDetail = () => {
   const getPriorityStyle = (priority) => {
     switch (priority) {
       case 'High':
-        return 'text-red-700 bg-red-50 border-red-200';
+        return 'text-rose-700 bg-rose-50 border-rose-200';
       case 'Medium':
-        return 'text-yellow-700 bg-yellow-50 border-yellow-200';
+        return 'text-amber-700 bg-amber-50 border-amber-200';
       default:
-        return 'text-blue-700 bg-blue-50 border-blue-200';
+        return 'text-sky-700 bg-sky-50 border-sky-200';
     }
   };
 
   const getStatusStyle = (status) => {
     switch (status) {
       case 'Complete':
-        return 'text-green-700 bg-green-50 border-green-200';
+        return 'text-emerald-700 bg-emerald-50 border-emerald-200';
       case 'In Progress':
-        return 'text-yellow-700 bg-yellow-50 border-yellow-200';
+        return 'text-amber-700 bg-amber-50 border-amber-200';
       default:
-        return 'text-red-700 bg-red-50 border-red-200';
+        return 'text-rose-700 bg-rose-50 border-rose-200';
     }
   };
 
@@ -105,157 +107,147 @@ const TicketDetail = () => {
 
   return (
     <DashboardLayout>
-      <div className="w-full px-4">
-        {/* Header */}
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-          <div>
-            <button
-              onClick={() => navigate(-1)}
-              className="text-sm text-green-700 hover:text-green-800 font-medium flex items-center gap-1 mb-2"
-            >
-              ← Back
-            </button>
-            <div className="flex items-center gap-3">
-              <h1 className="text-2xl font-bold text-gray-900">{ticket.title}</h1>
-              <span className="font-mono text-gray-400 text-lg font-medium">{ticket.ticketId}</span>
-            </div>
-            <p className="text-sm text-gray-500 mt-1">
-              Submitted by <span className="font-semibold text-gray-700">{ticket.submittedBy?.name}</span> ({ticket.submittedBy?.role}) on {new Date(ticket.createdAt).toLocaleString()}
+      <button
+        onClick={() => navigate(-1)}
+        className="text-xs font-bold text-emerald-700 hover:text-emerald-800 flex items-center gap-1.5 mb-6 transition-colors"
+      >
+        <ArrowLeft size={14} /> Back to Tickets
+      </button>
+
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+        <div>
+          <div className="flex flex-wrap items-center gap-3">
+            <h1 className="page-title">{ticket.title}</h1>
+            <span className="font-mono text-xs font-bold text-slate-400 bg-slate-50 px-2.5 py-1 rounded-lg border border-slate-100">{ticket.ticketId}</span>
+          </div>
+          <p className="text-xs font-bold text-slate-400 mt-2 uppercase tracking-wider">
+            Submitted by <span className="text-slate-600">{ticket.submittedBy?.name}</span>
+            <span className="capitalize"> ({ticket.submittedBy?.role})</span>
+            <span className="mx-1.5">•</span>
+            {new Date(ticket.createdAt).toLocaleString()}
+          </p>
+        </div>
+
+        <div className="flex items-center gap-2 shrink-0">
+          <span className={`px-2.5 py-1 text-xs font-extrabold rounded-xl border ${getPriorityStyle(ticket.priority)}`}>
+            {ticket.priority} Priority
+          </span>
+          <span className={`px-2.5 py-1 text-xs font-extrabold rounded-xl border ${getStatusStyle(ticket.status)}`}>
+            {ticket.status}
+          </span>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="lg:col-span-2 space-y-6">
+          <div className="bg-white rounded-2xl border border-slate-100 p-6 shadow-[0_8px_30px_rgb(0,0,0,0.008)]">
+            <h3 className="text-xs font-extrabold text-slate-400 uppercase tracking-wider mb-4 pb-3 border-b border-slate-50">Description</h3>
+            <p className="text-sm text-slate-700 whitespace-pre-wrap leading-relaxed font-medium">
+              {ticket.description}
             </p>
           </div>
 
-          <div className="flex items-center gap-3">
-            <span className={`px-3 py-1 text-xs font-semibold rounded-full border ${getPriorityStyle(ticket.priority)}`}>
-              {ticket.priority} Priority
-            </span>
-            <span className={`px-3 py-1 text-xs font-semibold rounded-full border ${getStatusStyle(ticket.status)}`}>
-              {ticket.status}
-            </span>
-          </div>
+          {ticket.screenshot && (
+            <div className="bg-white rounded-2xl border border-slate-100 p-6 shadow-[0_8px_30px_rgb(0,0,0,0.008)]">
+              <h3 className="text-xs font-extrabold text-slate-400 uppercase tracking-wider mb-4 pb-3 border-b border-slate-50">Screenshot / Attachment</h3>
+              <a
+                href={getBackendUrl(ticket.screenshot)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block overflow-hidden rounded-xl border border-slate-100 hover:opacity-90 transition-opacity"
+              >
+                <img
+                  src={getBackendUrl(ticket.screenshot)}
+                  alt="Attachment"
+                  className="w-full object-contain max-h-96"
+                />
+              </a>
+              <p className="text-xs font-bold text-slate-400 mt-3 text-center uppercase tracking-wider">Click image to open in new tab</p>
+            </div>
+          )}
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Main Content */}
-          <div className="lg:col-span-2 space-y-6">
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-              <h3 className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-3">Description</h3>
-              <p className="text-gray-700 text-sm whitespace-pre-wrap leading-relaxed">
-                {ticket.description}
-              </p>
+        <div className="space-y-6">
+          <div className="bg-white rounded-2xl border border-slate-100 p-6 shadow-[0_8px_30px_rgb(0,0,0,0.008)] space-y-4">
+            <h3 className="text-xs font-extrabold text-slate-400 uppercase tracking-wider border-b border-slate-50 pb-3">Details</h3>
+
+            <div>
+              <p className="label mb-1">Module Name</p>
+              <span className="text-xs font-bold text-slate-500 bg-slate-50 px-2 py-1 rounded-lg">{ticket.moduleName}</span>
             </div>
 
-            {ticket.screenshot && (
-              <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                <h3 className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-3">Screenshot / Attachment</h3>
+            {ticket.referenceUrl && (
+              <div>
+                <p className="label mb-1">Reference URL</p>
                 <a
-                  href={getBackendUrl(ticket.screenshot)}
+                  href={ticket.referenceUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="block overflow-hidden rounded-lg border border-gray-200 hover:opacity-90 transition-opacity"
+                  className="text-xs font-bold text-emerald-700 hover:text-emerald-800 flex items-center gap-1 truncate transition-colors"
                 >
-                  <img
-                    src={getBackendUrl(ticket.screenshot)}
-                    alt="Attachment"
-                    className="w-full object-contain max-h-96"
-                  />
+                  {ticket.referenceUrl}
+                  <ExternalLink size={12} className="shrink-0" />
                 </a>
-                <p className="text-xs text-gray-400 mt-2 text-center">Click image to open in new tab</p>
               </div>
             )}
-          </div>
 
-          {/* Sidebar / Developer Panel */}
-          <div className="space-y-6">
-            {/* Meta details */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 space-y-4">
-              <h3 className="text-sm font-semibold text-gray-400 uppercase tracking-wider border-b border-gray-100 pb-2">Details</h3>
-              
+            {ticket.closedAt && (
               <div>
-                <p className="text-xs text-gray-400 uppercase">Module Name</p>
-                <p className="text-sm font-medium text-gray-900 mt-0.5">{ticket.moduleName}</p>
+                <p className="label mb-1">Resolved On</p>
+                <p className="text-sm font-bold text-slate-800">
+                  {new Date(ticket.closedAt).toLocaleString()}
+                </p>
               </div>
-
-              {ticket.referenceUrl && (
-                <div>
-                  <p className="text-xs text-gray-400 uppercase">Reference URL</p>
-                  <a
-                    href={ticket.referenceUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-sm font-medium text-green-700 hover:underline mt-0.5 block truncate"
-                  >
-                    {ticket.referenceUrl}
-                  </a>
-                </div>
-              )}
-
-              {ticket.closedAt && (
-                <div>
-                  <p className="text-xs text-gray-400 uppercase">Resolved On</p>
-                  <p className="text-sm font-medium text-gray-900 mt-0.5">
-                    {new Date(ticket.closedAt).toLocaleString()}
-                  </p>
-                </div>
-              )}
-            </div>
-
-            {/* Developer Notes & Status Form */}
-            {isDeveloper ? (
-              <form onSubmit={handleUpdate} className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 space-y-4">
-                <h3 className="text-sm font-semibold text-gray-400 uppercase tracking-wider border-b border-gray-100 pb-2">Developer Controls</h3>
-                
-                <div>
-                  <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Update Status</label>
-                  <select
-                    value={status}
-                    onChange={(e) => setStatus(e.target.value)}
-                    className="w-full px-3 py-1.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent bg-white"
-                  >
-                    <option value="Pending">Pending</option>
-                    <option value="In Progress">In Progress</option>
-                    <option value="Complete">Complete</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Internal Notes (Private)</label>
-                  <textarea
-                    value={internalNotes}
-                    onChange={(e) => setInternalNotes(e.target.value)}
-                    rows={4}
-                    placeholder="Write developer progress logs, debugging steps, etc. (Not visible to submitter)..."
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent resize-none"
-                  ></textarea>
-                </div>
-
-                <button
-                  type="submit"
-                  disabled={updating}
-                  className="w-full px-4 py-2 bg-green-700 text-white rounded-lg text-sm font-semibold hover:bg-green-800 transition-colors disabled:opacity-50"
-                >
-                  {updating ? 'Saving...' : 'Save Settings'}
-                </button>
-
-                {ticket.status !== 'Complete' && (
-                  <button
-                    type="button"
-                    onClick={handleCloseTicket}
-                    disabled={updating}
-                    className="w-full px-4 py-2 border border-red-200 text-red-600 rounded-lg text-sm font-semibold hover:bg-red-50 transition-colors disabled:opacity-50 mt-2"
-                  >
-                    Close Ticket
-                  </button>
-                )}
-              </form>
-            ) : (
-              ticket.status === 'Complete' && (
-                <div className="bg-green-50 border border-green-200 rounded-xl p-4 text-center">
-                  <span className="text-2xl">✅</span>
-                  <p className="text-green-800 text-sm font-semibold mt-1">This ticket is resolved and closed.</p>
-                </div>
-              )
             )}
           </div>
+
+          {isDeveloper ? (
+            <form onSubmit={handleUpdate} className="bg-white rounded-2xl border border-slate-100 p-6 shadow-[0_8px_30px_rgb(0,0,0,0.008)] space-y-4">
+              <h3 className="text-xs font-extrabold text-slate-400 uppercase tracking-wider border-b border-slate-50 pb-3">Developer Controls</h3>
+
+              <div>
+                <label className="label">Update Status</label>
+                <GreenSelect value={status} onChange={(e) => setStatus(e.target.value)}>
+                  <option value="Pending">Pending</option>
+                  <option value="In Progress">In Progress</option>
+                  <option value="Complete">Complete</option>
+                </GreenSelect>
+              </div>
+
+              <div>
+                <label className="label">Internal Notes (Private)</label>
+                <textarea
+                  value={internalNotes}
+                  onChange={(e) => setInternalNotes(e.target.value)}
+                  rows={4}
+                  placeholder="Write developer progress logs, debugging steps, etc. (Not visible to submitter)..."
+                  className="input-field resize-none"
+                />
+              </div>
+
+              <button type="submit" disabled={updating} className="btn-primary w-full text-xs">
+                {updating ? 'Saving...' : 'Save Settings'}
+              </button>
+
+              {ticket.status !== 'Complete' && (
+                <button
+                  type="button"
+                  onClick={handleCloseTicket}
+                  disabled={updating}
+                  className="btn-danger w-full text-xs"
+                >
+                  Close Ticket
+                </button>
+              )}
+            </form>
+          ) : (
+            ticket.status === 'Complete' && (
+              <div className="bg-emerald-50 border border-emerald-100 rounded-2xl p-6 text-center">
+                <span className="text-3xl block mb-2">✅</span>
+                <p className="text-emerald-800 text-sm font-extrabold">This ticket is resolved and closed.</p>
+              </div>
+            )
+          )}
         </div>
       </div>
     </DashboardLayout>

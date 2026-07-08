@@ -55,25 +55,40 @@ const Classes = () => {
 
   return (
     <DashboardLayout>
-      <div className="flex justify-between items-center mb-8">
-        <div><h1 className="text-2xl font-bold">Classes</h1><p className="text-gray-500 text-sm">Manage classes and sections</p></div>
-        <button onClick={() => { setEditing(null); setForm({ name: '10', section: 'A', academicYear: '2025-2026', classTeacher: '', capacity: 40 }); setShowModal(true); }} className="btn-primary">+ Add Class</button>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+        <div>
+          <h1 className="page-title">🏫 Classes</h1>
+          <p className="page-subtitle">Manage classes, sections &amp; teachers</p>
+        </div>
+        <button onClick={() => { setEditing(null); setForm({ name: '10', section: 'A', academicYear: '2025-2026', classTeacher: '', capacity: 40 }); setShowModal(true); }} className="btn-primary text-xs">+ Add Class</button>
       </div>
 
       {loading ? <div className="flex justify-center py-12"><Spinner size="lg" /></div> : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {classes.map((c) => (
-            <div key={c._id} className="card">
-              <h3 className="text-lg font-semibold">Class {c.name} - {c.section}</h3>
-              <p className="text-sm text-gray-500">{c.academicYear}</p>
-              <div className="mt-3 space-y-1 text-sm text-gray-600">
-                <p>Teacher: {c.classTeacher?.user?.name || 'Not assigned'}</p>
-                <p>Subjects: {c.subjects?.length || 0}</p>
-                <p>Capacity: {c.capacity}</p>
+            <div key={c._id} className="bg-white rounded-2xl border border-slate-100 p-6 shadow-[0_8px_30px_rgb(0,0,0,0.008)] hover:shadow-[0_20px_40px_rgba(15,23,42,0.025)] hover:border-slate-200/50">
+              <div className="flex items-start justify-between mb-4">
+                <div>
+                  <h3 className="text-lg font-extrabold text-slate-800 tracking-tight">Class {c.name} - {c.section}</h3>
+                  <p className="text-xs font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-lg inline-block mt-1 uppercase tracking-wider">{c.academicYear}</p>
+                </div>
+                <span className="text-2xl">📚</span>
               </div>
-              <div className="flex gap-2 mt-4">
-                <button onClick={() => { setEditing(c); setForm({ name: c.name, section: c.section, academicYear: c.academicYear, classTeacher: c.classTeacher?._id || '', capacity: c.capacity }); setShowModal(true); }} className="btn-secondary text-sm flex-1">Edit</button>
-                <button onClick={() => handleDelete(c._id)} className="btn-danger text-sm flex-1">Delete</button>
+              <div className="space-y-2 mb-5">
+                {[
+                  { l: 'Class Teacher', v: c.classTeacher?.user?.name || 'Not assigned' },
+                  { l: 'Subjects', v: c.subjects?.length || 0 },
+                  { l: 'Capacity', v: c.capacity },
+                ].map(({ l, v }) => (
+                  <div key={l} className="flex justify-between items-center bg-slate-50/50 rounded-xl px-3 py-2 border border-slate-100">
+                    <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">{l}</span>
+                    <span className="text-xs font-bold text-slate-700">{v}</span>
+                  </div>
+                ))}
+              </div>
+              <div className="flex gap-2">
+                <button onClick={() => { setEditing(c); setForm({ name: c.name, section: c.section, academicYear: c.academicYear, classTeacher: c.classTeacher?._id || '', capacity: c.capacity }); setShowModal(true); }} className="btn-secondary text-xs flex-1">Edit</button>
+                <button onClick={() => handleDelete(c._id)} className="btn-danger text-xs flex-1">Delete</button>
               </div>
             </div>
           ))}
