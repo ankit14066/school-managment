@@ -23,7 +23,7 @@ const DashboardLayout = ({ children }) => {
             </button>
             <div className="flex items-center gap-2">
               <img src="/logo-1.png" alt="Logo" className="w-8 h-8 object-contain" onError={(e) => e.target.src = "https://cdn-icons-png.flaticon.com/512/167/167707.png"} />
-              <span className="font-extrabold text-slate-800 text-base tracking-tight">Green Valley</span>
+              <span className="font-extrabold text-slate-800 text-base tracking-tight">Quit Green Valley</span>
             </div>
           </div>
           <span className="text-xs font-extrabold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-lg uppercase tracking-wider">Portal</span>

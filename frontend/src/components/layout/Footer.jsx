@@ -7,7 +7,7 @@ const Footer = () => {
     <footer className="mt-10 pt-5 border-t border-slate-100 flex flex-col sm:flex-row justify-between items-center gap-3">
       <div className="flex items-center gap-2">
         <span className="text-xs font-extrabold text-slate-400 uppercase tracking-widest">
-          © {currentYear} Green Valley Convent School
+          © {currentYear} Quit Green Valley Convent School
         </span>
         <span className="hidden sm:inline text-slate-200">•</span>
         <span className="hidden sm:block text-xs font-bold text-slate-300">All rights reserved.</span>

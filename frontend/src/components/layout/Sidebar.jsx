@@ -38,13 +38,13 @@ const Sidebar = ({ mobileOpen, onClose }) => {
     { to: "/classes", label: "Classes", icon: <BookOpen className={iconClass} /> },
     { to: "/subjects", label: "Subjects", icon: <BookMarked className={iconClass} /> },
     { to: "/attendance", label: "Attendance", icon: <CalendarCheck className={iconClass} /> },
-    { to: "/fees", label: "Fees", icon: <IndianRupee className={iconClass} /> },
-    { to: "/results", label: "Results", icon: <BarChart3 className={iconClass} /> },
-    { to: "/timetable", label: "Timetable", icon: <Calendar className={iconClass} /> },
-    { to: "/notices", label: "Notices", icon: <Bell className={iconClass} /> },
-    { to: "/homework", label: "Homework", icon: <ClipboardList className={iconClass} /> },
-    { to: "/events", label: "Events", icon: <CalendarDays className={iconClass} /> },
-    { to: "/messages", label: "Messages", icon: <Mail className={iconClass} /> },
+    // { to: "/fees", label: "Fees", icon: <IndianRupee className={iconClass} /> },
+    // { to: "/results", label: "Results", icon: <BarChart3 className={iconClass} /> },
+    // { to: "/timetable", label: "Timetable", icon: <Calendar className={iconClass} /> },
+    // { to: "/notices", label: "Notices", icon: <Bell className={iconClass} /> },
+    // { to: "/homework", label: "Homework", icon: <ClipboardList className={iconClass} /> },
+    // { to: "/events", label: "Events", icon: <CalendarDays className={iconClass} /> },
+    // { to: "/messages", label: "Messages", icon: <Mail className={iconClass} /> },
     { to: "/profile", label: "Profile", icon: <User className={iconClass} /> },
     { to: "/tickets/submit", label: "Report Issue", icon: <Bug className={iconClass} /> },
   ];
@@ -52,12 +52,12 @@ const Sidebar = ({ mobileOpen, onClose }) => {
   const teacherNav = [
     { to: "/dashboard", label: "Dashboard", icon: <LayoutDashboard className={iconClass} /> },
     { to: "/attendance", label: "Attendance", icon: <CalendarCheck className={iconClass} /> },
-    { to: "/homework", label: "Homework", icon: <ClipboardList className={iconClass} /> },
-    { to: "/timetable", label: "Timetable", icon: <Calendar className={iconClass} /> },
-    { to: "/notices", label: "Notices", icon: <Bell className={iconClass} /> },
-    { to: "/events", label: "Events", icon: <CalendarDays className={iconClass} /> },
-    { to: "/messages", label: "Messages", icon: <Mail className={iconClass} /> },
-    { to: "/results", label: "Results", icon: <BarChart3 className={iconClass} /> },
+    // { to: "/homework", label: "Homework", icon: <ClipboardList className={iconClass} /> },
+    // { to: "/timetable", label: "Timetable", icon: <Calendar className={iconClass} /> },
+    // { to: "/notices", label: "Notices", icon: <Bell className={iconClass} /> },
+    // { to: "/events", label: "Events", icon: <CalendarDays className={iconClass} /> },
+    // { to: "/messages", label: "Messages", icon: <Mail className={iconClass} /> },
+    // { to: "/results", label: "Results", icon: <BarChart3 className={iconClass} /> },
     { to: "/profile", label: "Profile", icon: <User className={iconClass} /> },
     { to: "/tickets/submit", label: "Report Issue", icon: <Bug className={iconClass} /> },
   ];
@@ -65,12 +65,12 @@ const Sidebar = ({ mobileOpen, onClose }) => {
   const studentNav = [
     { to: "/dashboard", label: "Dashboard", icon: <LayoutDashboard className={iconClass} /> },
     { to: "/my-attendance", label: "Attendance", icon: <CalendarCheck className={iconClass} /> },
-    { to: "/homework", label: "Homework", icon: <ClipboardList className={iconClass} /> },
-    { to: "/timetable", label: "Timetable", icon: <Calendar className={iconClass} /> },
-    { to: "/my-results", label: "Results", icon: <BarChart3 className={iconClass} /> },
-    { to: "/notices", label: "Notices", icon: <Bell className={iconClass} /> },
-    { to: "/events", label: "Events", icon: <CalendarDays className={iconClass} /> },
-    { to: "/messages", label: "Messages", icon: <Mail className={iconClass} /> },
+    // { to: "/homework", label: "Homework", icon: <ClipboardList className={iconClass} /> },
+    // { to: "/timetable", label: "Timetable", icon: <Calendar className={iconClass} /> },
+    // { to: "/my-results", label: "Results", icon: <BarChart3 className={iconClass} /> },
+    // { to: "/notices", label: "Notices", icon: <Bell className={iconClass} /> },
+    // { to: "/events", label: "Events", icon: <CalendarDays className={iconClass} /> },
+    // { to: "/messages", label: "Messages", icon: <Mail className={iconClass} /> },
     { to: "/profile", label: "Profile", icon: <User className={iconClass} /> },
     { to: "/tickets/submit", label: "Report Issue", icon: <Bug className={iconClass} /> },
   ];
@@ -122,14 +122,14 @@ const Sidebar = ({ mobileOpen, onClose }) => {
           <img
             src="/logo-1.png"
             alt="School Logo"
-            className="h-14 w-14 object-contain"
+            className="h-20 w-20 object-contain"
             onError={(e) => {
               e.target.src = "https://cdn-icons-png.flaticon.com/512/167/167707.png";
             }}
           />
         </div>
         <p className="text-base font-extrabold text-slate-800 text-center tracking-tight leading-none">
-          Green Valley
+          Quit Green Valley
         </p>
         <p className="text-xs font-extrabold text-emerald-600 uppercase tracking-widest leading-none mt-1.5">
           Convent School
@@ -143,10 +143,9 @@ const Sidebar = ({ mobileOpen, onClose }) => {
             to={item.to}
             onClick={onClose}
             className={({ isActive }) =>
-              `flex items-center gap-3 px-4 py-3 rounded-xl text-base font-bold ${
-                isActive
-                  ? "bg-emerald-50 text-emerald-700 border-r-4 border-emerald-600"
-                  : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
+              `flex items-center gap-3 px-4 py-3 rounded-xl text-base font-bold ${isActive
+                ? "bg-emerald-50 text-emerald-700 border-r-4 border-emerald-600"
+                : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
               }`
             }
           >

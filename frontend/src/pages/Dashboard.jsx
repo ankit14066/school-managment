@@ -106,13 +106,13 @@ const Dashboard = () => {
             icon={<span className="text-xl">🏫</span>} 
             badge="Classes 1–12"
           />
-          <StatCard 
+          {/* <StatCard 
             title="Fee Collected" 
             value={formatLakhs(stats.feeCollection?.collected)} 
             color="orange" 
             icon={<span className="text-xl">💰</span>} 
             badge={`Due: ${formatLakhs(stats.feeCollection?.due)}`}
-          />
+          /> */}
         </div>
       )}
 
@@ -181,7 +181,7 @@ const Dashboard = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         
         {/* Notices Board */}
-        <div className="bg-white rounded-3xl border border-slate-100 p-6 shadow-[0_8px_30px_rgb(0,0,0,0.008)] flex flex-col justify-between">
+        {/* <div className="bg-white rounded-3xl border border-slate-100 p-6 shadow-[0_8px_30px_rgb(0,0,0,0.008)] flex flex-col justify-between">
           <div>
             <div className="flex justify-between items-center mb-6 pb-3 border-b border-slate-50">
               <div className="flex items-center gap-2">
@@ -210,10 +210,10 @@ const Dashboard = () => {
               )}
             </div>
           </div>
-        </div>
+        </div> */}
 
         {/* Upcoming Events Calendar */}
-        <div className="bg-white rounded-3xl border border-slate-100 p-6 shadow-[0_8px_30px_rgb(0,0,0,0.008)] flex flex-col justify-between">
+        {/* <div className="bg-white rounded-3xl border border-slate-100 p-6 shadow-[0_8px_30px_rgb(0,0,0,0.008)] flex flex-col justify-between">
           <div>
             <div className="flex justify-between items-center mb-6 pb-3 border-b border-slate-50">
               <div className="flex items-center gap-2">
@@ -241,10 +241,10 @@ const Dashboard = () => {
               )}
             </div>
           </div>
-        </div>
+        </div> */}
 
         {/* Homework Widget (Students / Parents) */}
-        {(isStudent || isParent) && (
+        {/* {(isStudent || isParent) && (
           <div className="bg-white rounded-3xl border border-slate-100 p-6 shadow-[0_8px_30px_rgb(0,0,0,0.008)] flex flex-col justify-between">
             <div>
               <div className="flex justify-between items-center mb-6 pb-3 border-b border-slate-50">
@@ -279,10 +279,10 @@ const Dashboard = () => {
               </div>
             </div>
           </div>
-        )}
+        )} */}
 
         {/* Activity Logs (Admin/Developer role overview) */}
-        {(isAdmin || user?.role === 'developer') && (
+        {/* {(isAdmin || user?.role === 'developer') && (
           <div className="bg-white rounded-3xl border border-slate-100 p-6 shadow-[0_8px_30px_rgb(0,0,0,0.008)] flex flex-col justify-between">
             <div>
               <div className="flex justify-between items-center mb-6 pb-3 border-b border-slate-50">
@@ -309,7 +309,7 @@ const Dashboard = () => {
               </div>
             </div>
           </div>
-        )}
+        )} */}
 
       </div>
     </DashboardLayout>

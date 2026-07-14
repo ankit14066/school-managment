@@ -37,17 +37,17 @@ const Login = () => {
             <img
               src="/logo-1.png"
               alt="School Logo"
-              className="h-16 w-16 object-contain"
+              className="h-20 w-20 object-contain"
               onError={(e) => {
                 e.target.src = "https://cdn-icons-png.flaticon.com/512/167/167707.png";
               }}
             />
           </div>
           <h2 className="text-2xl font-extrabold text-slate-800 tracking-tight text-center leading-none">
-            Green Valley
+            Quit Green Valley
           </h2>
           <p className="text-sm font-bold text-emerald-600 uppercase tracking-widest leading-none mt-2">
-            Convent School Portal
+            Convent School
           </p>
         </div>
 
@@ -92,7 +92,7 @@ const Login = () => {
             )}
           </button>
 
-          <div className="text-center pt-3 border-t border-slate-100">
+          {/* <div className="text-center pt-3 border-t border-slate-100">
             <button
               type="button"
               onClick={() => setFormData({ email: 'developer@school.com', password: 'developer123' })}
@@ -100,7 +100,7 @@ const Login = () => {
             >
               Quick Developer Bypass
             </button>
-          </div>
+          </div> */}
         </form>
       </div>
     </div>
